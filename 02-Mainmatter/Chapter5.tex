@@ -1,0 +1,105 @@
+\chapter{Alloying}
+\label{chap:alloying}
+
+\section*{Chapter description}
+
+In this chapter numerical results from alloys calculations are presented along with the analysis.
+Beginning from elastic characteristics of investigated materials, e.g. lattice constants, lattice bowing, mixing parameter effect, moving to electronic properties.
+Band structures and effective masses were calculated and described with details.
+The discussion and most important conclusions are also underlined.
+All calculations provided here were performed at the Wrocław Centre of Networking and Supercomputing.
+In all the \abinitio\ calculations performed within this chapter, the ABINIT package \cite{abinit1} has been used, with \LDA, \HGH\ pseudopotentials \cite{abinit2, hgh}, Perdew and Wang correlation part of the functional \cite{pw} (\PAW), and the Tran and Blaha modified Becke Johnson functional TB-mBJ (sometimes referred to as \mBJLDA) \cite{tbtb} for the exchange part, known for quantitatively improving the electronic band structure while preserving a reasonable time of calculations.
+As a result of convergence studies, the energy cutoff was set to $60$ Hartree, the k-points sampling for \BZ\ integration was ($10\times 10\times 10$) for all the calculations.
+The energy convergence criteria in the \SC\ run was set to $10^{-9}$ Ha and the residual wave function convergence criteria in the non-\SC\ part was $10^{-12}$.
+\ornament
+
+\section{Mixing parameter}
+
+In the beginning, the impact of the mixing parameter $\alpha$ on the band structure was tested.
+
+
+The test performed have shown that the calculated \SC\ band structures rather weakly depend on the parameter $\alpha$, namely, when it is varied in the range $[0,1]$, the maximum band gap variation does not exceed $0.05$ eV.
+Moreover, this effect is overshadowed by the adjusting procedure described in the next section.
+In our calculations the value $\alpha=0.1$ has been used.
+
+\ornament
+
+\section{Lattice constant and c\_TB09}
+
+The first step in \abinitio\ calculations is to obtain equilibrium lattice constants for chosen system corresponding to exchange--correlation functional and pseudopotential used.
+That point was already covered in strain calculations \ref{chap:strains} and there is no need to repeat them.
+The constants were taken from there \ref{Tab:strain_lattice} and applied to next steps.
+
+From previous calculations also boundary condition (pure Ge and Sn) $c$ parameter was taken.
+
+\ornament
+
+\section{Mixing parameter}
+
+At the beginning, the effect  of the mixing parameter $\alpha$ (Eq. \Ref{Eq:mixing}) on band structure was tested.
+
+The tests performed have shown that the calculated band structures rather weakly depend on the parameter $\alpha$, namely, when it is varied in the range $[0,1]$, the maximum band gap variation does not exceed $0.05$ eV.
+Moreover, this effect is overshadowed by the adjusting procedure described in the next section.
+In provided calculations the value $\alpha=0.1$ has been used, to assure the symmetry breaking from diamond to \BZ, induced by the fact that the alchemical atoms in the \prim\ are not the same. One should note that in the alloy there is no symmetry at all, except for identity, but the \BZ\ symmetry emerging in \AM\ approach has no effect on the results but speeds up the calculations.   
+
+\ornament
+
+\section{AM vs. supercell band structure}
+
+As described in the previous section the aim of this work was to reproduce the unfolded supercell band structure with the smooth curves given by \DFT\ \AM\ approximation, in particular a proper behavior of the direct and the indirect band gaps.
+Two parameters: the lattice constant $a$ and the $c$ (c\_TB09) have been found, for the parent materials Ge and Sn, and for the alloy at composition $x$ via the bowing parameter $b$ in Vegard's law \Ref{eq:Vegard_quad}.
+For practical reasons only the range up to $\approx 30\%$ (closing the band gap) has been considered in this work.
+As a reference the data from \cite{Polak_2017} have been used.
+The results are given in Tab. \ref{Tab:alloy_params}. 
+
+\begin{table}[]
+	\begin{center}
+		\caption{Lattice and $c$ parameters achieved from fitting procedure.}
+		\label{Tab:alloy_params}
+		\begin{tabular}{|c|c|c|c|}
+			\hline
+			parameter                           & Ge     & Sn    & $b$ \\ \hline
+			lattice const. (\AA) & 10.636 & 12.25 & -1.08    \\ \hline
+			c\_TB09                             & 1.037  & 0.99  & -0.02    \\ \hline
+		\end{tabular}
+	\end{center}
+\end{table}
+
+In Fig. \ref{Fig:alloy_band_gaps} the \AM\ and the \DFT\ supercell band gaps (\cite{Polak_2017}) variations, direct and indirect, are compared, and it can be seen that in the range of composition of interest the agreement is very satisfactory, the discrepancy is not higher than $0.03$ eV. 
+
+To validate the method even more, in Fig. \ref{Fig:AMvsSC} the band structures for parent materials, Ge and Sn, and the unfolded GeSn alloy band structures for chosen compositions (from \cite{Polak_2017}) are compared with those obtained in this work.
+It can be seen that the smooth \AM\ curves provide a very good approximation for the supercell bands.  
+
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=1\textwidth]{/alloys/GeSn-gap.pdf}
+	\caption{Band gaps from AM calculations vs supercell ones taken from \cite{Polak_2017}; red -- direct, blue -- indirect.}
+	\label{Fig:alloy_band_gaps}
+\end{figure}
+
+
+
+\begin{figure}[!htbp]
+	\centering
+	\subfloat[Pure Ge.]{\includegraphics[width=.45\textwidth]{/alloys/Ge_EIG.pdf}}\quad
+	\subfloat[$\textrm{Ge}_{0.963}\textrm{Sn}_{0.037}$.]{\includegraphics[width=.45\textwidth]{/alloys/GeSno_3_7.pdf}}\\
+	\subfloat[$\textrm{Ge}_{0.87}\textrm{Sn}_{0.13}$.]{\includegraphics[width=.45\textwidth]{/alloys/GeSno_13.pdf}}\quad
+	\subfloat[Pure Sn.]{\includegraphics[width=.45\textwidth]{/alloys/Sn_EIG.pdf}}
+	\caption{AM vs supercell band structures -- continuous blue line represents AM results.}
+	\label{Fig:AMvsSC}
+\end{figure}
+
+Finally, the effective masses of electrons at $\Gamma$ and $L$ valleys have been evaluated and compared with those reported in \cite{Polak_2017}. Also in this case the agreement is very good which confirms the validity of the method. 
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=.7\textwidth]{/alloys/GeSn-mass.pdf}
+	\caption{Effective masses of electrons in open gap $\textrm{Ge}_x\textrm{Sn}_{1-x}$; red/green -- $\Gamma$ valley, blue -- $L$ valley.}
+	\label{Fig:alloy_mass}
+\end{figure}
+
+To summarize, in this work the computational alchemy approximation has been used to represent the \DFT\ supercell electronic band structure of GeSn alloy with smooth, well fitted curves.
+The results have been used in \cite{janik.2021} to represent the band structure with the 30--bands $\mathbf{k}\cdot\mathbf{p}$ method, suitable in semiconductor device modelling.
+
+\ornament

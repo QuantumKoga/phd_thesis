@@ -1,0 +1,403 @@
+\chapter{Chosen proofs and derivations}
+\label{chap:derivations}
+
+In this chapter will be presented chosen proofs and derivations used it certain parts of the thesis above.
+
+\ornament
+
+\section*{The proof of the first part of Hohenberg-Kohn theorem}
+\label{chap:derivations_hk1}
+A popular proof of the Hohenberg-Kohn theorem is an indirect proof, i.e. it leads to a contradiction of the thesis argued with the adopted assumptions.
+Let's assume then that there is a possibility that two non-trivially different external potentials $V_{ext}^{(1)}$ and $V_{ext}^{(2)}$ (differing more than by a constant) lead to the same ground state electron density $n_0(\bb{r})$.
+The first potential $V_{ext}^{(1)}$ corresponds to a certain Hamiltonian $\hat{H}^{(1)}$ and the wave function of its ground state $\Psi_0^{(1)}$.
+Similarly, the second potential $V_{ext}^{(2)}$, being different from the first, has its own, different, Hamiltonian $\hat{H}^{(2)}$ with its own, different, ground state wave function $\Psi_0^{(2)}$.
+Thus, the following inequalities can be written:
+
+\begin{equation}
+\label{HK1}
+E_1=\left<\Psi_0^{(1)}\left|\hat{H}^{(1)}\right|\Psi_0^{(1)}\right><\left<\Psi_0^{(2)}\left|\hat{H}^{(1)}\right|\Psi_0^{(2)}\right>
+\end{equation}
+\begin{equation}
+\label{HK2}
+E_2=\left<\Psi_0^{(2)}\left|\hat{H}^{(2)}\right|\Psi_0^{(2)}\right><\left<\Psi_0^{(1)}\left|\hat{H}^{(2)}\right|\Psi_0^{(1)}\right>.
+\end{equation}
+
+According to the variational principle, the expected value of energy for the state described by the wave function other than the wave function of the ground state of this system will assume a greater value than in the case of the wave function of the ground state of this system.
+Let us now expand the right side of the inequality (\ref{HK1}), based on the Hamiltonian form of the equation \ref{Eq:Hamiltonian_full_HB_short} and the formula \ref{Eq:e_ext_hartree} for the external potential:
+
+\begin{equation}
+\label{HK3}
+\left<\Psi_0^{(2)}\left|\hat{H}^{(1)}\right|\Psi_0^{(2)}\right>=\left<\Psi_0^{(2)}\left|\hat{T}\right|\Psi_0^{(2)}\right>+\left<\Psi_0^{(2)}\left|\hat{U}\right|\Psi_0^{(2)}\right>+\int d\bb{r}\,V_{ext}^{(1)}n_0(\bb{r}).
+\end{equation}
+
+By adding and subtracting the second external potential to the right side of the resulting equation
+
+\begin{equation}
+\label{HK4}
+\begin{aligned}
+\left<\Psi_0^{(2)}\left|\hat{H}^{(1)}\right|\Psi_0^{(2)}\right>
+&=\left<\Psi_0^{(2)}\left|\hat{T}\right|\Psi_0^{(2)}\right>+\left<\Psi_0^{(2)}\left|\hat{U}\right|\Psi_0^{(2)}\right>+\int d\bb{r}\,V_{ext}^{(1)}n_0(\bb{r})+\\
+&+\int d\bb{r}\,V_{ext}^{(2)}n_0(\bb{r})-\int d\bb{r}\,V_{ext}^{(2)}n_0(\bb{r}),
+\end{aligned}
+\end{equation}
+
+and noting that:
+
+\begin{equation}
+\label{HK5}
+\left<\Psi_0^{(2)}\left|\hat{T}\right|\Psi_0^{(2)}\right>+\left<\Psi_0^{(2)}\left|\hat{U}\right|\Psi_0^{(2)}\right>+\int d\bb{r}\,V_{ext}^{(2)}n_0(\bb{r})=\left<\Psi_0^{(2)}\left|\hat{H}^{(2)}\right|\Psi_0^{(2)}\right>=E_2,
+\end{equation}
+
+we can return to the equation \ref{HK3}, and inserting the remaining two elements under one sign of the integral we get:
+
+\begin{equation}
+\label{HK6}
+\left<\Psi_0^{(2)}\left|\hat{H}^{(1)}\right|\Psi_0^{(2)}\right>=E_2+\int d\bb{r}\left[V_{ext}^{(1)}-V_{ext}^{(2)}\right]n_0(\bb{r}).
+\end{equation}
+
+Comparing with the equation \ref{HK1} we get
+
+\begin{equation}
+\label{HK7}
+E_1<E_2+\int d\bb{r}\left[V_{ext}^{(1)}-V_{ext}^{(2)}\right]n_0(\bb{r}).
+\end{equation}
+
+Applying the above reasoning to the equation (\ref{HK2}), we get an analogous inequality, but with inverted indices 1 and 2:
+
+\begin{equation}
+\label{HK8}
+E_2<E_1+\int d\bb{r}\left[V_{ext}^{(2)}-V_{ext}^{(1)}\right]n_0(\bb{r}).
+\end{equation}
+
+Adding the inequalities \ref{HK7} and \ref{HK8} side by side leads to the suppression of integrals and to a contradiction:
+
+\begin{equation}
+\label{HK9}
+E_1+E_2<E_2+E_1.
+\end{equation}
+
+Conclusion: Two different external potentials cannot lead to the same ground state density.
+
+\ornament
+
+\section*{The proof of the second part of Hohenberg-Kohn theorem}
+\label{chap:derivations_hk2}
+After going through the first theorem in detail, the proof of the second becomes even simpler.
+As proved above, the external potential and, consequently, all the properties of the system, in particular the energies, are uniquely defined by the electron density functional.
+So it can be written that:
+
+\begin{equation}
+\begin{aligned}
+\label{Eq:HK_II_1}
+E[n(\bb{r})]&=\left<\Psi\left|\hat{H}\right|\Psi\right>=T[n(\bb{r})]+U[n(\bb{r})]+V_{ext}[n(\bb{r})]=\\
+&=T[n(\bb{r})]+U[n(\bb{r})]+\int d\bb{r}V_{ext}n(\bb{r})=F_{HK}[n(\bb{r})]+\int d\bb{r}V_{ext}n(\bb{r})
+\end{aligned}
+\end{equation}
+
+there has been defined the so-called Hohenberg-Kohn functional $F_{HK}[n(\bb{r})]=T[n(\bb{r})]+U[n(\bb{r})]$ referred to in the theorem .
+It contains elements related to the kinetic energy of electrons and their interactions with each other, which must be universal for any system, because they are functionals only of electron density.
+
+It has already been proved that the energy \ref{Eq:HK_II_1} for the ground state density $n_0(\bb{r})$ calculated as the Hamiltonian expected value for the ground state wave function $\Psi_0$ is the ground state energy:
+
+\begin{equation}
+\label{Eq:HK_II_2}
+E_0[n_0(\bb{r})]=\left<\Psi_0\left|\hat{H}\right|\Psi_0\right>
+\end{equation}
+
+One can see at once that the use of any other electron density $n_1(\bb{r})$ and the corresponding other wave function $\Psi_1$ leads to an energy higher than the energy of the ground state:
+
+\begin{equation}
+\label{Eq:HK_II_3}
+E_0[n_0(\bb{r})]=\left<\Psi_0\left|\hat{H}\right|\Psi_0\right><\left<\Psi_1\left|\hat{H}\right|\Psi_1\right>=E_1[n_1(\bb{r})]
+\end{equation}
+
+Consequently, it can be seen that if only the $F_{HK}[n(\bb{r})]$ functional was known, then the minimization of the system energy by means of the electron density $n(\bb{r})$ would lead to finding the exact ground state density $n_0(\bb{r})$ hence, the exact ground state energy $E_0[n_0(\bb{r})]$.
+
+\ornament
+
+\section*{Elastic constants derivation}
+\label{chap:derivations_stress}
+This derivation shows the path of transformations done to achieve elastic constants.
+In general case, during change of Cartesian system, all of the matrix components play it's role in transformation.
+As it is shown in here \cite{stress_tensor}.
+Each tensor row represent different cube wall, while each column sets the direction of strain/stress (Fig. \ref{Fig:appendix_strain}).
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=.4\textwidth]{/appendix/stress.pdf}
+    \caption{Interpretation of strain/stress tensor elements.}
+    \label{Fig:appendix_strain}
+\end{figure}
+
+In the equations below, such notation is used, that strain and stress tensors are represented by vectors made of independent tensor elements:
+
+\begin{equation}
+\label{Eq:app_tensor}
+\begin{bmatrix}
+\varepsilon_{11} & \varepsilon_{12} & \varepsilon_{13}\\
+\varepsilon_{21} & \varepsilon_{22} & \varepsilon_{23}\\
+\varepsilon_{31} & \varepsilon_{32} & \varepsilon_{33}
+\end{bmatrix}\Rightarrow
+\begin{bmatrix}
+\varepsilon_1 (\varepsilon_{11}) \\ \varepsilon_2 (\varepsilon_{22}) \\ \varepsilon_3 (\varepsilon_{33}) \\ \varepsilon_4 (\varepsilon_{23}=\varepsilon_{32}) \\ \varepsilon_5 (\varepsilon_{13}=\varepsilon_{31}) \\ \varepsilon_6 (\varepsilon_{12}=\varepsilon_{21})
+\end{bmatrix}.
+\end{equation}
+
+Such a conversion may be used, due to symmetry of strain/stress tensor, independently of space group, which is also visible on Fig. \ref{Fig:appendix_strain}. This symmetry will occur even in the case of unorthogonal lattice vectors.
+
+All the desired elastic properties, in this part of work, are for pure group IV materials, which crystallize in diamond structure (\#227).
+The symmetry also affects the stress tensor equation which, for diamond structure, is as follows:
+
+\begin{equation}
+\label{Eq:app_tensor_eq}
+\begin{bmatrix}
+\sigma_1 \\ \sigma_2 \\ \sigma_3 \\ \sigma_4 \\ \sigma_5 \\ \sigma_6
+\end{bmatrix}=
+\begin{bmatrix}
+c_{11} & c_{12} & c_{12} & 0 & 0 & 0 \\
+c_{12} & c_{11} & c_{12} & 0 & 0 & 0 \\
+c_{12} & c_{12} & c_{11} & 0 & 0 & 0 \\
+0 & 0 & 0 & c_{44} & 0 & 0 \\
+0 & 0 & 0 & 0 & c_{44} & 0 \\
+0 & 0 & 0 & 0 & 0 & 0c_{44} 
+\end{bmatrix}
+\begin{bmatrix}
+\varepsilon_1 \\ \varepsilon_2 \\ \varepsilon_3 \\ \varepsilon_4 \\ \varepsilon_5 \\ \varepsilon_6
+\end{bmatrix}.
+\end{equation}
+
+For that specific space group, elastic tensor has only three non-zero independent elements: $c_{11}$, $c_{12}$ and $c_{44}$.
+
+The matrix equation \ref{Eq:app_tensor_eq} can be simply written as:
+
+\begin{equation}
+    \label{Eq:tensor_element}
+    \sigma_i=\sum_jc_{ij}\varepsilon_j
+\end{equation}
+
+Space group symmetry slightly simplifies the system of equations, from which will be chosen ones to derive elastic constants, to four:
+
+\begin{equation}
+    \label{Eq:sigma_system}
+    \begin{cases}
+    \sigma_1=c_{11}\varepsilon_1+c_{12}\varepsilon_2+c_{12}\varepsilon_3 \\
+    \sigma_2=c_{12}\varepsilon_1+c_{11}\varepsilon_2+c_{12}\varepsilon_3 \\
+    \sigma_3=c_{12}\varepsilon_1+c_{12}\varepsilon_2+c_{11}\varepsilon_3 \\
+    \sigma_4=c_{44}\varepsilon_4.
+    \end{cases}
+\end{equation}
+
+From first equation of Eq. \ref{Eq:sigma_system} $c_{11}$ is derived:
+
+\begin{equation}
+    \label{Eq:sigma_1}
+    \begin{aligned}
+        \sigma_1-c_{12}(\varepsilon_2+\varepsilon_3)=c_{11}\varepsilon_1 \\
+        c_{11}=\frac{\sigma_1-c_{12}(\varepsilon_2+\varepsilon_3)}{\varepsilon_1}
+    \end{aligned}
+\end{equation}
+
+and from second equation $c_{12}$:
+\begin{equation}
+    \label{Eq:sigma_2}
+    \begin{aligned}
+        \sigma_2=c_{12}(\varepsilon_1+\varepsilon_3)+\varepsilon_2\frac{\sigma_1-c_{12}(\varepsilon_2+\varepsilon_3)}{\varepsilon_1} \\
+        c_{12}(\varepsilon_1+\varepsilon_3)-c_{12}\frac{(\varepsilon_2+\varepsilon_3)\varepsilon_2}{\varepsilon_1}=\sigma_2-\sigma_1\frac{\varepsilon_2}{\varepsilon_1} \\
+        c_{12}(\varepsilon_1+\varepsilon_2-\frac{(\varepsilon_2+\varepsilon_3)\varepsilon_2}{\varepsilon_1})=\sigma_2-\sigma_1\frac{\varepsilon_2}{\varepsilon_1}
+    \end{aligned}
+\end{equation}
+
+The equations above (Eq. \ref{Eq:sigma_1}, \ref{Eq:sigma_2}) along with fourth equation from Eq. \ref{Eq:sigma_system} gives general solution for diamond structure elastic constants in form:
+
+\begin{equation}
+    \label{Eq:sigma_general}
+    \begin{cases}
+    c_{11}=\frac{\sigma_1}{\varepsilon_1}-\frac{(\sigma_2-\sigma_1\frac{\varepsilon_2}{\varepsilon_1})(\varepsilon_2+\varepsilon_3)}{\varepsilon_1(\varepsilon_1+\varepsilon_2)-\varepsilon_2(\varepsilon_2+\varepsilon_3)} \\
+    c_{12}=\frac{\sigma_2-\sigma_1\frac{\varepsilon_2}{\varepsilon_1}}{\varepsilon_1+\varepsilon_2-\frac{\varepsilon_2(\varepsilon_2+\varepsilon_3)}{\varepsilon_1}}\\
+    c_{44}=\frac{\sigma_4}{\varepsilon_4}
+    \end{cases}
+\end{equation}
+
+Due to technical limitations of relaxation algorithms implemented in ABINIT code, at least one lattice vector had to be orthogonal to the other vectors.
+Supercells used in relaxation process are presented on Fig. \ref{Fig:supercells}.
+Strains could be applied only in lattice vectors directions.
+Therefore, the results obtained in relaxation process do not include shear strain and stress.
+
+To solve the equations \ref{Eq:sigma_general} there must be chosen certain systems, from which data (stress / strain) will be taken.
+For calculation of $c_{11}$ and $c_{12}$ [100] straining direction will be the most suitable, due to fact, that $\sigma_1=\sigma_2$, $\varepsilon_1=\varepsilon_2$ and $\sigma_4=\sigma_5=\sigma_6=\varepsilon_4=\varepsilon_5=\varepsilon_6=0$.
+
+To calculate $c_{44}$, shear strain must be inducted.
+Therefore, [110] or [111] straining direction must be used here.
+Due to less complicated system, [110] direction was chosen for further analysis.
+The $c_{44}$ elastic constant is described as:
+\begin{equation}
+    \label{Eq:c44}
+    c_{44}=\frac{\sigma_4}{\varepsilon_4}=\frac{\sigma_5}{\varepsilon_5}=\frac{\sigma_6}{\varepsilon_6}.
+\end{equation}
+
+In general, $\varepsilon$ can be described by tangent of an angle in strained system.
+For [110] direction, in plane lattice constants ($a_1$ and $a_2$) has different value due to shear strain, which leads to $\varepsilon_6$ in form:
+
+\begin{equation}
+    \label{Eq:shear_strain}
+    \varepsilon_6=tan\Delta\vartheta=tan(\pi/4-atan(\frac{a_2}{a_1})).
+\end{equation}
+
+Unfortunately, $\sigma_6=0$ in this case as well (definition of supercell required it), but it can be taken directly from here\cite{stress_tensor} in form:
+
+\begin{equation}
+    \label{Eq:shear_stress}
+    \sigma_6=(\sigma_2-\sigma_1)sin\Delta\vartheta cos\Delta\vartheta.
+\end{equation}
+where $\vartheta$ is an angle of triangle made by supercell lattice vectors $a_1$ and $a_2$ (which are orthogonal).
+
+After a few trivial algebraic transformations, the final equations for calculating elastic constants are as follow:
+
+\begin{equation}
+    \label{Eq:elastic}
+    \begin{cases}
+    c_{11}=\frac{\sigma_1}{\varepsilon_1}-\frac{\varepsilon_1+\varepsilon_3}{\varepsilon_1}\frac{\sigma_3\varepsilon_1-\sigma_1\varepsilon_3}{2\varepsilon_1^2-\varepsilon_3(\varepsilon_1+\varepsilon_3)} \\
+    c_{12}=\frac{\sigma_3\varepsilon_1-\sigma_1\varepsilon_3}{2\varepsilon_1^2-\varepsilon_3(\varepsilon_1+\varepsilon_3)} \\
+    c_{44}=(\sigma_2-\sigma_1)sin^2\Delta\vartheta
+    \end{cases}
+\end{equation}
+
+It should be noted that elastic constants, as all of the associated theory, work in linear regime, which is not apparent in higher strains.
+In fact, even in the case of 1\% of deformation, non-linearity is noticeable enough to give slightly different results in compressive and tensile strains.
+Therefore, results given in chapter \ref{chap:strains} are arithmetic average of both types of strain.
+
+\ornament
+
+\section*{Supercell to primitive cell transformation}
+\label{chap:derivations_supercell}
+The \prim\ of diamond structure can be defined through transformation matrix from \conv\ as
+
+\begin{equation}
+\label{Eq:app_trans_prim}
+\begin{bmatrix}
+a_1' \\ a_2' \\ a_3'
+\end{bmatrix}=
+\begin{bmatrix}
+0 & 0.5 & 0.5 \\
+0.5 & 0 & 0.5 \\
+0.5 & 0.5 & 0
+\end{bmatrix}
+\begin{bmatrix}
+a_1 \\ a_2 \\ a_3
+\end{bmatrix},
+\end{equation}
+
+while transformation from [100] and [110] strain direction supercell as
+
+\begin{equation}
+\label{Eq:app_trans_100}
+\begin{bmatrix}
+a_1' \\ a_2' \\ a_3'
+\end{bmatrix}=
+\begin{bmatrix}
+0.5 & 0.5 & 0 \\
+-0.5 & 0.5 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+a_1 \\ a_2 \\ a_3
+\end{bmatrix},
+\end{equation}
+
+and for [111] as
+
+\begin{equation}
+\label{Eq:app_trans_111}
+\begin{bmatrix}
+a_1' \\ a_2' \\ a_3'
+\end{bmatrix}=
+\begin{bmatrix}
+0.5 & 0 & 0.5 \\
+-0.5 & -0.5 & 0 \\
+-1 & 1 & 1
+\end{bmatrix}
+\begin{bmatrix}
+a_1 \\ a_2 \\ a_3
+\end{bmatrix}.
+\end{equation}
+
+Converting the supercell to \prim\ requires transformation matrix.
+Not only to follow changes in lattice vectors but also the vectors defining atomic positions in unit cell.
+Due to chosen relaxation algorithm they can vary as well.
+In case of equilibrium systems the transformation is rather obvious but it can be useful as testing object.
+Of higher importance are distorted structures.
+To avoid problems with numerical representation of long decimal numbers, which occur concerning little deformations, as an outcome only length and angles between lattice vectors are given, instead of Cartesian representation.
+
+Matrix multiplication is not commutative, thus there is a need to find inversions of supercell matrices.
+As a result matrix from supercells to conventional cells are given below.
+For [100] and [110] strain directions
+
+\begin{equation}
+\label{Eq:app_100_inv}
+\begin{bmatrix}
+a_1' \\ a_2' \\ a_3'
+\end{bmatrix}=
+\begin{bmatrix}
+1 & -1 & 0 \\
+1 & 1 & 0 \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+a_1 \\ a_2 \\ a_3
+\end{bmatrix},
+\end{equation}
+
+and for [111] direction
+
+\begin{equation}
+\label{Eq:app_111_inv}
+\begin{bmatrix}
+a_1' \\ a_2' \\ a_3'
+\end{bmatrix}=
+\begin{bmatrix}
+2/3 & -2/3 & -1/3 \\
+-2/3 & -4/3 & 1/3 \\
+4/3 & 2/3 & 1/3
+\end{bmatrix}
+\begin{bmatrix}
+a_1 \\ a_2 \\ a_3
+\end{bmatrix}.
+\end{equation}
+
+With inversions given, the final transformations can be built.
+Multiplication from \conv\ to \prim\ times supercell to \conv, in that exact order, gives required matrix transformations.
+From [100] and [110] strain directions to \prim
+
+\begin{equation}
+\label{Eq:app_100_final}
+\begin{bmatrix}
+a_1' \\ a_2' \\ a_3'
+\end{bmatrix}=
+\begin{bmatrix}
+-0.25 & 0.25 & 0.5 \\
+0.25 & 0.25 & 0.5 \\
+0 & 0.5 & 0
+\end{bmatrix}
+\begin{bmatrix}
+a_1 \\ a_2 \\ a_3
+\end{bmatrix},
+\end{equation}
+
+and for [111] direction
+
+\begin{equation}
+\label{Eq:app_111_final}
+\begin{bmatrix}
+a_1' \\ a_2' \\ a_3'
+\end{bmatrix}=
+\begin{bmatrix}
+-0.75 & 0.25 & 0.5 \\
+-0.25 & 0.5 & 0.75 \\
+0 & -0.25 & 0.25
+\end{bmatrix}
+\begin{bmatrix}
+a_1 \\ a_2 \\ a_3
+\end{bmatrix}.
+\end{equation}
+
+\ornament

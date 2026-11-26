@@ -1,0 +1,1044 @@
+\chapter{DFT}
+\label{chap:theory}
+
+\section*{Chapter description}
+
+In this chapter, the theoretical background of \DFT\ will be introduced.
+Beginning from a description of all basic approximations usually used in condensed matter physics, through Hohenberg-Kohn theorem and presentation of Kohn-Sham equations to the detailed introduction to chosen aspects and approaches used in \DFT\ codes.
+\ornament
+\section{DFT basics -- Hohenberg-Kohn theorem}
+In condensed matter physics, the main object of interest are atomic systems in which ions are arranged in a certain way, creating a three-dimensional structure.
+A special case are crystals, i.e. infinite periodic systems (in which there is translational symmetry).
+So we are dealing with a system of heavy, positively charged particles (nuclei) and light particles with a negative charge (electrons).
+As can be easily seen, the basic interactions between them will be electrostatic (Coulomb) interactions.
+Negatively charged electrons are attracted by positively charged atomic nuclei, and the electrons themselves, like the nuclei, being charged with the same amount repel each other.
+Such a system of many interacting particles is called a many-body system.
+Due to their properties (small size and mass), the particles we are discussing here, in particular electrons, must be treated in terms of quantum mechanics.
+Its basic equation, the Schr\"odinger equation after it has been solved, allows the electronic structure to be determined.
+When looking for the properties of the system in its stationary state, we solve the time--independent Schr\"odinger equation in the form: 
+
+\begin{equation}
+    \label{Eq:Schrodinger1}
+    \hat{H}\Psi=E_{tot}\Psi
+\end{equation}
+
+where $\Etot$ is the total energy of the system, $\Psi = \Psi(\bb{r}_1, \bb{r}_2, \dots,\bb{r}_n;\bb{R}_1, \bb{R}_2, \dots,\bb{R}_n) $ is a many-body wave function, and $\hat{H}$ is the system's total energy operator -- the Hamiltonian.
+In order to write the exact form of the Hamiltonian, all types of energy in the system should be considered.
+We have already mentioned the three types of electrostatic interactions.
+We have many bodies to consider, so we will write the operators as sums over all these objects.
+The operator of the interaction (attraction) energy of electrons and atomic nuclei: 
+
+\begin{equation}
+    \label{Eq:Hamiltonian_n-e}
+    \hat{V}_{ne}=-\frac{1}{4\pi\epsilon_0}\sum_{i,I}\frac{Z_Ie^2}{|\bb{r}_i-\bb{R}_I|},
+\end{equation}
+
+operator of the interaction (repulsion) energy of electrons with each other:
+
+\begin{equation}
+    \label{Eq:Hamiltonian_e-e}
+    \hat{V}_{ee}=\frac{1}{4\pi\epsilon_0}\frac{1}{2}\sum_{\substack{i,j\\i\neq j}}\frac{e^2}{|\bb{r}_i-\bb{r}_j|},
+\end{equation}
+
+where the factor $\sfrac{1}{2}$ compensates for the double summation of factors (because $|\bb{r}_i-\bb{r}_j|=|\bb{r}_j-\bb{r}_i|$), and the operator of the interaction (repulsion) energy of the atomic nuclei with each other: 
+
+\begin{equation}
+    \label{Eq:Hamiltonian_n-n}
+    \hat{V}_{nn}=\frac{1}{4\pi\epsilon_0}\frac{1}{2}\sum_{\substack{I,J\\I\neq J}}\frac{Z_IZ_Je^2}{|\bb{R}_I-\bb{R}_J|}.
+\end{equation}
+
+However, it should not be forgotten that both electrons and nuclei are in constant motion, and therefore have corresponding kinetic energies.
+The kinetic energy operator of moving electrons can be expressed by: 
+
+\begin{equation}
+    \label{Eq:Hamiltonian_kin-e}
+    \hat{T}_{e}=-\frac{\hbar^2}{2m_e}\sum_{i}\nabla^2_{\bb{r}_i},
+\end{equation}
+
+and the operator of kinetic energy of moving nuclei:
+
+\begin{equation}
+    \label{Eq:Hamiltonian_kin-n}
+    \hat{T}_{ion}=-\frac{\hbar^2}{2}\sum_{I}\frac{\nabla^2_{\bb{R}_I}}{M_{ion}}.
+\end{equation}
+
+We will obtain the full Hamiltonian form after adding all the operators noted above: 
+
+\begin{equation}
+    \label{Eq:Hamiltonian_full_MB_no_hartreeunits}
+    \begin{aligned}
+        \hat{H}=
+        &-\frac{\hbar^2}{2m_e}\sum_{i}\nabla^2_{\bb{r}_i}+\frac{1}{4\pi\epsilon_0}\frac{1}{2}\sum_{\substack{i,j\\i\neq j}}\frac{e^2}{|\bb{r}_i-\bb{r}_j|}-\frac{1}{4\pi\epsilon_0}\sum_{i,I}\frac{Z_Ie^2}{|\bb{r}_i-\bb{R}_I|}+\\
+        &-\frac{\hbar^2}{2}\sum_{i}\frac{\nabla^2_{\bb{R}_I}}{M_{ion}}+\frac{1}{4\pi\epsilon_0}\frac{1}{2}\sum_{\substack{I,J\\I\neq J}}\frac{Z_IZ_Je^2}{|\bb{R}_I-\bb{R}_J|}.
+    \end{aligned}
+\end{equation}
+
+The convention is used in which capital letters represent quantities related to atomic nuclei and lower case letters represent electrons.
+The electron position vector was then denoted by $\bb{r}_i$, the nucleus position vector by $\bb{R}_I$, $e$ was the charge of the electron, $Z_I$ atomic number (charge) of the nucleus, $m_e$ was the mass of the electron a $M_{ion}$ mass of the nucleus.
+There are also constants: $1/4 \pi \epsilon_0$ - Coulomb constant and $\hbar$ -- Planck constant. Due to the constants appearing before the sum signs, in atomic calculations the much more convenient and often used system of atomic units is the Hartree system.
+In this settings, the mass ($m_e$) and the charge ($e$) of the electron are assumed to be $1$, similarly $\hbar = 1$ and $ 1/4 \pi \epsilon_0 = 1$.
+The unit of length in this system is the radius of the hydrogen atom (in the sense of the value of the expected distance of the electron from the nucleus in the ground state), $1$ Bohr, and the energy unit is $1$ Hartree (twice the ionization energy of the hydrogen atom).
+From now on, for the sake of convenience, this system of units will be used.
+After rewriting the Hamiltonian \ref {Eq:Hamiltonian_full_MB_no_hartreeunits}, we obtain its simpler form: 
+
+\begin{equation}
+    \label{Eq:Hamiltonian_full_MB}
+    \begin{aligned}
+        \hat{H}=
+        &-\frac{1}{2}\sum_{i}\nabla^2_{\bb{r}_i}+\frac{1}{2}\sum_{\substack{i,j\\i\neq j}}\frac{1}{|\bb{r}_i-\bb{r}_j|}-\sum_{i,I}\frac{Z_I}{|\bb{r}_i-\bb{R}_I|}+\\
+        &-\frac{1}{2}\sum_{i}\frac{\nabla^2_{\bb{R}_I}}{M_{ion}}+\frac{1}{2}\sum_{\substack{I,J\\I\neq J}}\frac{Z_IZ_J}{|\bb{R}_I-\bb{R}_J|}.
+    \end{aligned}
+\end{equation}
+
+It is the full form of the many-body Hamiltonian.
+The corresponding Schr\"odinger equation is very complicated and generally impossible to solve analytically.
+For this reason, a number of assumptions and approximations are used.
+
+It is worth noting that the Hamiltonian \ref{Eq:Hamiltonian_full_MB} is very general.
+It describes precisely any many-body system: solids as well as liquids and gases.
+In contrast to liquids and gases, where the nuclei can move quite freely, in solids the nuclei have only an indicative position.
+Electrons move much faster than ions (approximately the velocity ratio is equal to the reciprocal of the mass ratio), so fast that in the time scale in which their motion would have to be considered, the ions are practically stationary, even if we take into account, for example, lattice vibrations.
+Considering this fact and the fact that the mass of the atomic nucleus is much (several orders of magnitude) greater than the mass of the electron, we can see that one of the Hamiltonian elements contributes little to the whole: the kinetic energy of the ions (\ref{Eq:Hamiltonian_kin-n}).
+This allows us to completely neglect this term in the Hamiltonian (\ref{Eq:Hamiltonian_full_MB}) (assuming $M_{ion} = \infty$).
+Another consequence of the assumption that the ions are stationary is that the energy of the electrostatic interaction of the ions with other ions (\ref{Eq:Hamiltonian_n-n}) becomes a constant value. We can get rid of it from the Hamiltonian by defining the energy $E$ in the Schr\"odinger \ref{Eq:Schrodinger1} equation as:
+
+\begin{equation}
+    \label{Eq:Born_Oppenheimer_Energy}
+    E=\Etot-\frac{1}{2}\sum_{\substack{I,J\\I\neq J}}\frac{Z_IZ_J}{|\bb{R}_I-\bb{R}_J|}.
+\end{equation}
+
+We reduced the Hamiltonian to a much shorter form, which is now as follows: 
+
+\begin{equation}
+    \label{Eq:hamiltonian_short}
+    \begin{aligned}
+        \hat{H}=-\frac{1}{2}\sum_{i}\nabla^2_{\bb{r}_i}+\frac{1}{2}\sum_{\substack{i,j\\i\neq j}}\frac{1}{|\bb{r}_i-\bb{r}_j|}-\sum_{i,I}\frac{Z_I}{|\bb{r}_i-\bb{R}_I|}.
+    \end{aligned}
+\end{equation}
+
+Due to the fact that the ions are now fixed in specific positions, their positions $\bb{R}_I$ become external parameters, and the wave function of the system under consideration becomes a function of only the positions of electrons $\bb{r}_i$ with ions positions as parameters: $\Psi = \Psi_R(\bb{r}_1, \bb{r}_2, \dots, \bb{r}_n)$.
+Finally, we can note that the term describing the interaction of electrons with ions can now be called simply the external potential $\hat{V}_{ext}$ in which the electrons move. So we reduced a very complicated many-body problem to that of an interacting gas of electrons moving in an external potential created by stationary atomic nuclei.
+We call this approximation the \emph{Born-Oppenheimer} approximation. Writing the Hamiltonian (\ref{Eq:hamiltonian_short}) in a short symbolic form, we get:
+
+\begin{equation}
+    \label{Eq:Hamiltonian_full_HB_short}
+    \hat{H}=\hat{T}+\hat{U}+\hat{V}_{ext},
+\end{equation}
+
+where for clarity, the electron kinetic energy operator $\hat{T}_{ee}$ was replaced with $\hat{T}$, and the energy operator of the interaction of electrons with each other $\hat{V}_{ee}$ was replaced with $\hat{U}$, and $\hat{V}_{ext}$ now represents $\hat{V}_{ne}$ - the external potential from stationary ions in which electrons move.
+From now on, we will discuss the Hamiltonian in this form.
+It should also be recalled here that the wave function is a function of a system of indistinguishable particles, the square of which must therefore be symmetrical due to the particle rearrangement operation.
+This means that the function itself must be either symmetric or antisymmetric, due to such an operation.
+It is known from the basics of quantum mechanics that this property distinguishes between fermions and bosons, and in the case of electrons that are fermions, the wave function is antisymmetric.
+
+The expected value of the Hamiltonian is the total energy of the system, and the expected values of the individual operators that make up the Hamiltonian are the corresponding energies. In general, for any $\hat{O}$ operator, you can write:
+
+\begin{equation}
+    \label{Eq:expectation_value}
+    \left<\Psi(\bb{r})\left|\hat{O}\right|\Psi(\bb{r})\right>=\int_{-\infty}^{\infty}\Psi(\bb{r})^*\hat{O}\Psi(\bb{r})d\bb{r}.
+\end{equation}
+
+In integrals like the above, which run over the entire space of $\bb{r}$, the notation $\infty$ and $-\infty$ will be ignored in later derivations.
+Similarly, the designation of a multiple integral will be replaced with a single integral sign.
+
+So far, the only place where the wave function has been mentioned is \ref{Eq:hamiltonian_short}.
+The many-body wave function was described there.
+However, solving the Schr\"odinger equation with the wave function in this form is impossible for multi-electron systems.
+One of the most common atoms in semiconductor physics, a fourteen-electron silicon, would have a wave function dependent on $42$ variables ($3$ coordinates, $12$ electrons).
+Therefore, it is necessary to describe the wave function in a different, simpler way.
+
+The Hartree approximation is historically the first attempt to approximate the many-body problem of indent particles (electrons).
+Not all interacting electrons are considered here at the same time, but it is said that the electrons are independent of each other and move in the so-called effective potential, i.e. the field averaged over the distribution of the charge from the remaining electrons.
+
+With this approximation, we assume that the many-body wave function will take the form of the product of one-electron wave functions:
+
+\begin{equation}
+    \label{Eq:hartree_wf}
+    \Psi(\bb{r}_1, \bb{r}_2, \dots,\bb{r}_n)\approx\psi_1(\bb{r}_1)\psi_2(\bb{r}_2)\dots\psi_n(\bb{r}_n)=\prod_{i=1}^n\psi_i(\bb{r}_i).
+\end{equation}
+
+Unfortunately, this function does not fulfill the antisymmetry condition, appropriate for fermions.
+However, it is known that in this case there can be at most 2 particles (with different spins) in a monoparticle state, which is known in the literature as the Pauli exclusion principle.
+When using the Hartree approximation, we must apply this condition a priori.
+
+Consequently, instead of one practically unsolvable Schr\"odinger equation for a multi-electron wave function with $n$ variables, we get $n$ independent one-electron equations that can be solved.
+The Hamiltonian in these one-electron equations will be very similar to the general Hamiltonian (\ref{Eq:Hamiltonian_full_HB_short}).
+The operator of the kinetic energy and the external potential will remain unchanged, while the operator of the energy of interaction of electrons with each other will be replaced by the so-called Hartree $U_H$ potential.
+
+However, we will start the derivation from examining the expected value (\ref{Eq:expectation_value}) of the interaction energy with the external field $E_{ext}$, with the wave function factored as above.
+This is the expected value of the $\hat{V}_{ext}$ operator and taking into account Hartree's assumption of wave functions (\ref{Eq:hartree_wf}):
+
+\begin{equation}
+    \label{Eq:e_ext_hartree}
+    \begin{aligned}
+        &E_{ext}=\left<\prod_{i=1}^n\psi_i(\bb{r}_i)\right|\sum_{k=1}^nV_{ext}(\bb{r}_k)\left|\prod_{i=1}^n\psi_j(\bb{r}_j)\right>=\sum_k\left<\prod_i\psi_i(\bb{r}_i)\right|V_{ext}(\bb{r}_k)\left|\prod_i\psi_i(\bb{r}_i)\right>=\\
+        &=\sum_k\prod_{i}\left<\psi_i(\bb{r}_i)\right|V_{ext}(\bb{r}_k)\left|\psi_i(\bb{r}_i)\right>=\sum_k\left(\prod_{\substack{i\\i\neq k}}\left<\psi_i(\bb{r}_i)|\psi_j(\bb{r}_j)\right>\right)\left<\psi_k(\bb{r}_k)\right|V_{ext}(\bb{r}_k)\left|\psi_k(\bb{r}_k)\right>=\\
+        &=\sum_k\left<\psi_k(\bb{r}_k)\right|V_{ext}(\bb{r}_k)\left|\psi_k(\bb{r}_k)\right>=\int d\bb{r}V_{ext}(\bb{r})\sum_k\left|\psi_k(\bb{r})\right|^2=\int d\bb{r}V_{ext}(\bb{r})n(\bb{r}).
+    \end{aligned}
+\end{equation}
+
+In the above derivation, the functions in the products have been grouped so that we can use the relation $\left<\psi_i(\bb{r}_i)|\psi_i(\bb{r}_j)\right>=1$ 1, and the electron density is defined as:
+
+\begin{equation}
+    \label{Eq:density_sum_wfs}
+    n(\bb{r})=\sum_{k=occ}\left|\psi_k(\bb{r})\right|^2,
+\end{equation}
+
+where summation takes place only over states with electrons.
+
+As one can see, the interaction energy with the external potential is an electron density functional.
+The operator of the external potential is a functional derivative of this energy:
+
+\begin{equation}
+    \label{Eq:v_ext_hartree}
+    \hat{V}_{ext}=\frac{\delta E_{ext}[n]}{\delta n(\bb{r})}=\frac{\delta\left(\int d\bb{r}\,V_{ext}(\bb{r})n(\bb{r})\right)}{\delta n(\bb{r})}=V_{ext}(\bb{r}).
+\end{equation}
+
+A similar procedure can be used to calculate the Hartree energy $E_H$ as the expected value (\ref{Eq:expectation_value}) of the electron interaction energy operator (the second term \ref{Eq:hamiltonian_short}), taking into account the Hartree assumption about wave functions (\ref{Eq:hartree_wf}):
+
+\begin{equation}
+    \label{Eq:energy_hartree1}
+    \begin{aligned}
+        E_H&=\left<\prod_{i=1}^n\psi_i(\bb{r}_i)\left|\frac{1}{2}\sum_{\substack{k,m\\k\neq m}}\frac{1}{\left|\bb{r}_k-\bb{r}_m\right|}\right|\prod_{i=1}^n\psi_j(\bb{r}_i)\right>=\frac{1}{2}\sum_{\substack{k,m\\k\neq m}}\prod_{i}\left<\psi_i(\bb{r}_i)\left|\frac{1}{\left|\bb{r}_k-\bb{r}_m\right|}\right|\psi_i(\bb{r}_i)\right>=\\
+        &=\frac{1}{2}\sum_{\substack{k,m\\k\neq m}}\left(\prod_{\substack{i\\i\neq k,m}}\left<\psi_i(\bb{r}_i)|\psi_i(\bb{r}_i)\right>\right)\left<\psi_k(\bb{r}_k)\psi_m(\bb{r}_m)\left|\frac{1}{\left|\bb{r}_k-\bb{r}_m\right|}\right|\psi_k(\bb{r}_k)\psi_m(\bb{r}_m)\right>=\\
+        &=\frac{1}{2}\sum_{\substack{k,m\\k\neq m}}\left<\psi_k(\bb{r}_k)\psi_m(\bb{r}_m)\left|\frac{1}{\left|\bb{r}_k-\bb{r}_m\right|}\right|\psi_k(\bb{r}_k)\psi_m(\bb{r}_m)\right>,
+    \end{aligned}
+\end{equation}
+
+where, as before $\left<\psi_i(\bb{r}_i)|\psi_i(\bb{r}_i)\right>=1$.
+The sum $\sum_{k,m;\,k\neq m}$ will be converted to the difference of the sums $\sum_{k,m}$ and $\sum_{k=m}$
+
+\begin{equation}
+    \label{Eq:energy_hartree2}
+    \begin{aligned}
+        E_H&=\frac{1}{2}\sum_{k,m}\left<\psi_k(\bb{r}_k)\psi_m(\bb{r}_m)\left|\frac{1}{\left|\bb{r}_k-\bb{r}_m\right|}\right|\psi_k(\bb{r}_k)\psi_m(\bb{r}_m)\right>+\\
+        &-\frac{1}{2}\sum_{k=m}\left<\psi_k(\bb{r}_k)\psi_m(\bb{r}_m)\left|\frac{1}{\left|\bb{r}_k-\bb{r}_m\right|}\right|\psi_k(\bb{r}_k)\psi_m(\bb{r}_m)\right>=\\
+        &=\frac{1}{2}\sum_{k,m}\int d\bb{r}_kd\bb{r}_m\frac{\left|\psi_k(\bb{r}_k)\right|^2\left|\psi_m(\bb{r}_m)\right|^2}{\left|\bb{r}_k-\bb{r}_m\right|}-\frac{1}{2}\sum_{k=m}\int d\bb{r}_kd\bb{r}_m\frac{\left|\psi_k(\bb{r}_k)\right|^2\left|\psi_m(\bb{r}_m)\right|^2}{\left|\bb{r}_k-\bb{r}_m\right|}.
+    \end{aligned}
+\end{equation}
+
+In addition, the integration takes place over the entire space, so indexing $\bb{r} $ becomes unnecessary, as a consequence $\bb{r}_k$ and $\bb{r}_m$ will be replaced by $\bb{r}$ and $\bb{r}'$ respectively, at the same time introducing the expression for electron density (\ref{Eq:density_sum_wfs}):
+
+\begin{equation}
+    \begin{aligned}
+        \label{Eq:energy_hartree3}
+        E_H&=\frac{1}{2}\sum_{k,m}\int d\bb{r}d\bb{r}'\frac{\left|\psi_k(\bb{r})\right|^2\left|\psi_m(\bb{r}')\right|^2}{\left|\bb{r}-\bb{r}'\right|}-\frac{1}{2}\sum_{\substack{k=m}}\int d\bb{r}d\bb{r}'\frac{\left|\psi_k(\bb{r})\right|^2\left|\psi_m(\bb{r}')\right|^2}{\left|\bb{r}-\bb{r}'\right|}=\\
+        &=\frac{1}{2}\int d\bb{r}d\bb{r}'\frac{n(\bb{r})n(\bb{r}')}{\left|\bb{r}-\bb{r}'\right|}-\frac{1}{2}\sum_{k=m}\int d\bb{r}d\bb{r}'\frac{\left|\psi_k(\bb{r})\right|^2\left|\psi_m(\bb{r}')\right|^2}{\left|\bb{r}-\bb{r}'\right|}=E_{H'}+E_{SI},
+    \end{aligned}
+\end{equation}
+
+obtaining the final form of Hartree energy.
+In practice, this first term is called the Hartree energy and denotes as $E_H$ (and this will also be the case later in this text), and the second is the self-interaction energy (because it describes the effect of the density of $i$'th electron on itself) which is often omitted in the derivation, due to the fact that in more advanced methods such as the Hartree-Fock method, described later, or in the Kohn-Sham approach, this term is compensated by other terms contributing to the total energy.\\
+The Hartree energy form obtained in this way, after calculating the functional derivative from it, will determine the final expression for the Hartree energy operator
+
+\begin{equation}
+    \label{Eq:hartree_potential}
+    \hat{U}_H=\frac{\delta E_H[n]}{\delta n(\bb{r})}=\int d\bb{r}\frac{n(\bb{r}')}{\left|\bb{r}-\bb{r}'\right|}.
+\end{equation}
+
+Putting the obtained potential into the Hamiltonian (\ref{Eq:Hamiltonian_full_HB_short}), we get the Hartree Hamiltonian $\hat{H}_H$.
+It is also worth noting that in the kinetic energy operator, with the assumed form of the wave function, becomes the sum of single-particle kinetic energies.
+Ultimately, the Hamiltonian becomes the sum of the independent single-particle Hamiltonians of the form:
+
+\begin{equation}
+    \label{Eq:hartree_hamiltonian2}
+    \begin{aligned}
+        \hat{H}_H=-\frac{1}{2}\nabla^2_{\bb{r}}+\int d\bb{r}\frac{n(\bb{r}')}{\left|\bb{r}-\bb{r'}\right|}-\sum_I\frac{Z_I}{|\bb{r}-\bb{R}_I|}
+    \end{aligned}
+\end{equation}
+
+and the corresponding one particle Schr\"odinger equations:
+
+\begin{equation}
+    \label{Eq:hartree_equations}
+    \left(-\frac{1}{2}\nabla^2_{\bb{r}}+\int d\bb{r}\frac{n(\bb{r}')}{\left|\bb{r}-\bb{r'}\right|}-\sum_I\frac{Z_I}{|\bb{r}-\bb{R}_I|}\right)\psi_i(\bb{r})=E_i\psi_i(\bb{r})
+\end{equation}
+
+The above procedure is not an exact derivation of the Hartree equations.
+Both these and subsequent methods are derived on the basis of the variational theorem.
+However, the steps performed above are the main and most difficult steps to derive from this theorem and form the basis for a full derivation to understand it accurately, and hence the approach was adopted to its presentation.
+The following methods will be presented in a similar way.
+
+Returning to the Hartree equation (\ref{Eq:hartree_equations}), it can be seen that despite reducing the complex many-body problem to a simpler one-electron one, the many-body complexity remained in the newly introduced Hamiltonian term.
+Even though the equation is now a one-electron one, there is an electron density from all electrons in the Hartree term.
+Equation \ref{Eq:hartree_equations} is an eigenvalue problem, the solution of which consists in determining the eigenvalues and the corresponding eigenfunctions.
+However, for its solution, it is necessary to know the electron density, whose determination requires knowledge of the eigenfunctions of all occupied states (formula \ref{Eq:density_sum_wfs}).
+This type of problem is called a self-consistent problem.
+The procedure for its termination is also called similarly - the self-consistent procedure.
+
+The self-consistent procedure consists in solving the one-electron Schr\"odinger equation with the Hamiltonian (\ref{Eq:hartree_hamiltonian2}), where the electron density depends on the solution of this equation (eigenvalues).
+This is usually a density calculated in a very approximate and not very computationally complex way.
+Then the Hartree operator is constructed on its basis, and with it the entire Hamiltonian.
+Knowing the Hamiltonian, it is possible to solve the Schr\"odinger equation, which gives new one-electron wave function and , what follows, new electron density.
+At this point, the procedure loops and is performed until it converges, i.e. until the newly obtained solutions differ from the previous ones by a certain predetermined (small) value.
+
+Schematically, this procedure can be illustrated by means of a diagram (Fig. \ref{scf_hartree}).
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1.\textwidth]{/theory/scf_hartree.pdf}
+    \caption{Pictorial diagram of the \SC\ procedure.}
+    \label{scf_hartree}
+\end{figure}
+
+As it turns out, in other, more precise approaches, a very similar procedure is used, i.e. the multi-electron Schr\"odinger equation is replaced by the one-electron eigenproblem of the Schr\"odinger, in which there is a density derived from all electrons.
+Also in these cases a self-consistent procedure will be used, according to a very similar scheme as in the picture \ref{scf_hartree}.
+
+The previous approximation, the Hartree approximation, does not take into account the antisymmetry of the wave function due to the rearrangement of the particles, and the consequences of this lack are reduced by applying the Pauli exclusion principle, i.e. the assumption that at most two particles with different spins can be in one state.
+The fact that the wave function is antisymmetrical is taken into account in another historical approximation, Hartree-Fock's.
+The wave function is assumed here as a certain sum of the products of single-particle functions, but constructed in such a way that the change of the particles results in a change of the sign of the function.
+It can be presented in an analytical way as a Slater determinant:
+
+\begin{equation}
+    \label{Eq:fock_wf_slater}
+    \Psi(\bb{r}_1, \bb{r}_2, \dots,\bb{r}_n)\approx\frac{1}{\sqrt{n!}}\left| 
+    \begin{matrix}
+        \psi_1(\bb{r}_1) & \psi_2(\bb{r}_1) & \dots & \psi_n(\bb{r}_1)\\
+        \psi_1(\bb{r}_2) & \psi_2(\bb{r}_2) & \dots & \psi_n(\bb{r}_2)\\
+        \vdots & \vdots & \ddots & \vdots\\
+        \psi_1(\bb{r}_n) & \psi_2(\bb{r}_n) & \dots & \psi_n(\bb{r}_n).
+    \end{matrix}
+    \right|.
+\end{equation}
+
+Writing the wave function in this form introduces two very important limitations on the nature of the wave function, which did not occur in the previous approximation.
+It is known from the properties of determinants that the determinant of a matrix with two identical columns or two identical lines is equal to zero.
+Consequently, this means that two electrons cannot be in the same quantum state simultaneously.
+This principle is known as the Pauli exclusion principle.
+The second property, antisymmetry of the wavefunctions due to the rearrangement of the particles, is also taken into account because this operation is equivalent to the displacement of two columns (or rows) of the determinant, resulting in a change of its sign.
+This can be easily illustrated in a two-electron system:
+
+\begin{equation}
+    \label{Eq:fock_wf_2el1}
+    \Psi(\bb{r}_1, \bb{r}_2)\approx\frac{1}{\sqrt{2}}\left|
+    \begin{matrix}
+        \psi_1(\bb{r}_1) & \psi_2(\bb{r}_1) \\
+        \psi_1(\bb{r}_2) & \psi_2(\bb{r}_2) 
+    \end{matrix}
+    \right|=\frac{1}{\sqrt{2}}\left(\psi_1(\bb{r}_1)\psi_2(\bb{r}_2)-\psi_2(\bb{r}_1)\psi_1(\bb{r}_2)\right).
+\end{equation}
+
+After changing the coordinates of the particles:
+
+\begin{equation}
+    \label{Eq:fock_wf_2el2}
+    \begin{aligned}
+        \Psi(\bb{r}_2, \bb{r}_1)&\approx\frac{1}{\sqrt{2}}\left|
+        \begin{matrix}
+        \psi_1(\bb{r}_2) & \psi_2(\bb{r}_2) \\
+        \psi_1(\bb{r}_1) & \psi_2(\bb{r}_1) 
+        \end{matrix}
+        \right|=\frac{1}{\sqrt{2}}\left(\psi_1(\bb{r}_2)\psi_2(\bb{r}_1)-\psi_2(\bb{r}_2)\psi_1(\bb{r}_1)\right)=\\
+        &=-\frac{1}{\sqrt{2}}\left(\psi_2(\bb{r}_2)\psi_1(\bb{r}_1)-\psi_1(\bb{r}_2)\psi_2(\bb{r}_1)\right),
+    \end{aligned}
+\end{equation}
+
+and so
+
+\begin{equation}
+    \label{Eq:antysymmetry_fock}
+    \Psi(\bb{r}_1, \bb{r}_2)=-\Psi(\bb{r}_2, \bb{r}_1).
+\end{equation}
+
+Both the Hartree and Hartree-Fock approximations of the wave functions are orthonormal, that is:
+
+\begin{equation}
+    \label{Eq:orthogonality}
+    \int d\bb{r}\psi_i(\bb{r})\psi_j(\bb{r})=0\;\;\;\text{ dla }\;\;\;i\neq j
+\end{equation}
+
+and
+
+\begin{equation}
+    \label{Eq:normality}
+    \int d\bb{r}\psi_i(\bb{r})\psi_j(\bb{r})=1\;\;\;\text{ dla }\;\;\;i=j.
+\end{equation}
+
+This property is used with the strict derivation of the Hartree and Hartree-Fock equations, based on the variational principle.
+
+Knowing the consequences of writing the wave function in this form, one can move on to the determination of the Hartree-Fock Hamiltonian and, consequently, the Hartree-Fock equations.
+Like the Hartree approximation, the kinetic energy operator and the external potential remain unchanged.
+It is enough to deal with the definition of the electron interaction operator, which we will call the Hartree-Fock operator $\hat{U}_{HF}$.
+Using reasoning similar to that used in the derivation of the Hartree approximation (\ref{Eq:energy_hartree3}) and calculating the Hartree-Fock energy as the expected value of the electron-electron interaction operator with the Hartree-Fock assumption of the wave function (\ref{Eq:fock_wf_slater}) we get the expression:
+
+\begin{equation}
+    \begin{aligned}
+        \label{Eq:energy_hf}
+        E_{HF}&=\frac{1}{2}\sum_{k,m}\int d\bb{r}d\bb{r}'\frac{\left|\psi_k(\bb{r})\right|^2\left|\psi_m(\bb{r}')\right|^2}{\left|\bb{r}-\bb{r}'\right|}-\frac{1}{2}\sum_{k,m}\int d\bb{r}d\bb{r}'\psi_k^*(\bb{r})\psi_m^*(\bb{r'})\frac{1}{\left|\bb{r}-\bb{r}'\right|}\psi_m(\bb{r})\psi_k(\bb{r'})=\\
+        &=\frac{1}{2}\int d\bb{r}d\bb{r}'\frac{n(\bb{r})n(\bb{r}')}{\left|\bb{r}-\bb{r}'\right|}-\frac{1}{2}\sum_{k,m}\int d\bb{r}d\bb{r}'\psi_k^*(\bb{r})\psi_m^*(\bb{r'})\frac{1}{\left|\bb{r}-\bb{r}'\right|}\psi_m(\bb{r})\psi_k(\bb{r'})=E_{H}+E_{X},
+    \end{aligned}
+\end{equation}
+
+that is, the Hartree-Fock energy is the sum of the Hartree energy and an additional term resulting from the antisymmetrization of the wave functions, called the exchange energy.
+In this case, taking into account the self-interaction ($m=k$) in the Hartree term has no consequences, because $m=k$ is also included in the second sum (exchange energy) and these expressions cancel out.
+Solving the problem of self-interaction is another advantage of this method.
+When counting functional derivatives from energy, the Hartree-Fock potential $\hat{U}_{HF}=U_H+\hat{U}_X$ can be obtained, consisting of the previously introduced Hartree potential and the exchange potential:
+
+\begin{equation}
+    \label{Eq:exchange potential}
+    \hat{U}_X^k=\left(-\sum_{m}\int d\bb{r}'\psi_m^*(\bb{r'})\psi_k(\bb{r'})\frac{1}{\left|\bb{r}-\bb{r}'\right|}\right)\psi_m(\bb{r}).
+\end{equation}
+
+Finally, the Hartree-Fock equation is obtained:
+
+\begin{equation}
+    \label{Eq:hartree-fock_equations}
+    \left(-\frac{1}{2}\nabla^2_{\bb{r}}+V_{ext}+U_H+\hat{U}_{X}\right)\psi_i(\bb{r})=E_i\psi_i(\bb{r}),
+\end{equation}
+
+which, like the Hartree equation, solves in a self-consistent manner.
+It is worth noting that the exchange potential depends directly on the wave functions (not on the density) and is non-local (its effect on a one-particle function is associated with integration over the entire space), which consequently significantly increases the computational effort for solving these equations.
+
+Already in the late thirties of the last century, ideas appeared to formulate the problem of electron gas with the use of electron density.
+We will understand the electron density as follows:
+
+\begin{equation}
+    \label{Eq:density}
+    n(\bb{r})=N\int d\bb{r}_2d\bb{r}_3...d\bb{r}_N\left| \Psi(\bb{r},\bb{r}_1,\bb{r}_2,...,\bb{r}_N)\right|^2
+\end{equation}
+
+It is therefore the probability density normalized to the number of electrons in the system, i.e. the integral of the density over the entire space giving the number of particles, which includes the reference to the classical density.
+The choice of the non-indexed spatial coordinate in the above formula is arbitrary ($r_1$ here) because the square of the module of the wave function is symmetrical due to the rearrangement of the particles.
+
+The first successful electron density approach was called the Thomas-Fermi approximation.
+However, it was not until the 1960s that these ideas were theorized.
+Two papers have appeared, Hohenberg-Kohn and Kohn-Sham, which laid the foundations for the theory of density functional theory (\DFT).
+The first contains the formulation and proof of the fundamental \DFT\ \cite{hohenberg} theorem, and the second provides a recipe for how to use \cite{kohn_sham_eq} in practice.
+Hohenberg and Kohn have successfully attempted to formulate a theory for the many-body problem described by the Hamiltonian (\ref{Eq:hamiltonian_short}), but based on the concept of electron density, which is a real function of a spatial variable.
+They introduced and proved the theorem, today called Hohenberg-Kohn \cite{hohenberg} theorem.
+
+The essence of the Hohenberg-Kohn theorem can be summarized in the following points:
+
+\begin{enumerate}
+\item For a system of interacting electrons, the electron density $n(\bb{r})$ unequivocally defines the external potential (with the accuracy to a constant), for which this density is the ground state density.
+This means that the external potential is a functional of the ground state electron density.
+
+\item The external potential determines the Hamiltonian of the system and the Hamiltonian all the physical properties of the system, meaning that all observables (especially total energy) are density functionals.
+
+\item For a real external potential, under the Rayleigh-Ritz variational principle, the total energy functional must assume a minimum at the electron density corresponding to the ground state of this potential.
+\end{enumerate}
+
+Proofs of both parts of the theorem above are presented in appendix \ref{chap:derivations}, in sections \ref{chap:derivations_hk1} and \ref{chap:derivations_hk2}.
+
+An important question arises regarding the domain of the functional, i.e. whether each (any) function of $n(\bb{r})$ has a representation in the form of a certain potential, for which this density can be obtained from the many-body ground state function.
+By avoiding the mathematical difficulties at this point, we limit our considerations to the so-called V-representable densities, i.e. those that have such a representation.
+
+\ornament
+
+\section{Kohn-Sham construction, self-consistent calculations, XC -- functional approximations}
+
+The work of Kohn-Sham \cite{kohn_sham_eq} contains an mental construction (known in English literature as the Kohn-Sham \ansatz), which allows, using the Kohn-Sham theorem, to effectively solve the problem of electron gas in the outer field.
+This construction is based on the introduction of a hypothetical (auxiliary) system of independent particles (fermions) that meets two conditions:
+
+\begin{itemize}
+    \item electron density $n(\bb{r})$ is the same as in the real system,
+    \item the total energy of the system is the same as in the real system.
+\end{itemize}
+
+It turns out that many physical properties of systems can be derived from changes in total energy and electron density.
+This means that if we have a system that matches the real system well, in the sense that it has the same electron density and total energy, and on the other hand is much easier to describe mathematically, then it can be used to find the physical properties of the latter.
+The Hohenberg-Kohn theorem applies to any particle system, including a hypothetical one, which implies that there is an external potential that will produce the ground state density for independent particles as it is in the real system. 
+These are the main ideas behind the Kohn-Sham construction.
+Below it is presented how to find this potential.
+
+The assumption of particle independence allows the factorization of the wave function with one-particle functions, similar to the Hartree approximation:
+
+\begin{equation}
+    \label{Eq:hartree_wf_ks}
+    \Psi(\bb{r}_1, \bb{r}_2, \dots,\bb{r}_n)=\psi_1(\bb{r}_1)\psi_2(\bb{r}_2)\dots\psi_n(\bb{r}_n).
+\end{equation}
+
+Also like the Hartree approximation, the electron density \ref{Eq:density} can be written as:
+
+\begin{equation}
+    \label{Eq:density_sum_wfs2}
+    n(\bb{r})=\sum_{k=occ}\left|\psi_k(\bb{r})\right|^2,
+\end{equation}
+
+where summation includes occupied states with a priori imposed Pauli exclusion principle.
+
+At this point, however, the similarity to the Hartree approximation ends and we return to the Kohn-Sham construction.
+Let's write down the formula for the total energy of a real system in the general form $\left(\left<\Psi\left|\hat{O}\right|\Psi\right>=\left<\hat{O}\right>\right)$:
+
+\begin{equation}
+    \label{KS10}
+    E=\left<\hat{H}\right>=\left<\hat{T}\right>+\left<\hat{U}\right>+\int d\bb{r}\,V_{ext}(\bb{r})\,n(\bb{r}).
+\end{equation}
+
+We are aiming to obtain a similar expression for the Kohn-Sham auxiliary system.
+The energy of the auxiliary system must be the same by definition, so to meet this condition we will add and subtract from the above expression certain density functionals (the same as in the real system).
+These will be functionals related to the system of independent particles: kinetic energy $T_s[n]$, and energy Hartree $E_H[n]$, already introduced.
+
+\begin{equation}
+    \label{KS11}
+    E=\left<\hat{H}\right>=\left<\hat{T}\right>+\left<\hat{U}\right>+\int d\bb{r}\,V_{ext}\,n(\bb{r})+T_s[n]-T_s[n]+E_H[n]-E_H[n],
+\end{equation}
+
+and then let's group the elements of the above functional by calling it the Kohn-Sham energy, $E_{KS}$:
+
+\begin{equation}
+    \label{KS12}
+    E_{KS}=T_s[n]+E_H[n]+\int d\bb{r}\,V_{ext}\,n(\bb{r})+E_{XC}[n],
+\end{equation}
+
+where
+
+\begin{equation}
+    \label{KS13}
+    E_{XC}[n]=\left(\left<\hat{T}\right>-T_s[n]\right)+\left(\left<\hat{U}\right>-E_H[n]\right).
+\end{equation}
+
+The formula \ref{KS12} has a form very similar to \ref{KS10} except that it concerns an auxiliary independent electron system.
+The first three terms refer to the independent electron system and are density functionals, but unlike the output system, these functionals are known.
+The consequence of the presented construction is the appearance of a new term $E_{XC}[n]$, called \emph{exchange-correlation}, which is the energy difference between the real and auxiliary systems and is a correction resulting from effects in quantum electron gas not factored into account: exchange and correlation.
+As detailed analysis shows, the functional contributions to this patch are local in nature, i.e. they come from a small area around a certain point in the phase space.
+In the formula \ref{KS13}, the first term is the difference between the kinetic energy of the interacting and non-interacting electrons, and the second is the difference between the total electron-electron interaction energy and the electron electrostatic interaction energy, called the Hartree energy.
+Unfortunately, the energy of exchange--correlation is a functional of unknown analytical form.
+Although the predominant contribution to the total energy is contained in the earlier terms, without a sufficiently precise approximation of the form $E_{XC}$ it is not possible to correctly determine the physical properties of the systems.
+Hence, the selection of an appropriate correlation-exchange functional is of key importance in computational practice, and the construction of functionals is an important branch in the development of \DFT\ methods.
+
+Let's write the function $E_{KS}[n]$ in an explicit form:
+
+\begin{equation}
+    \label{KS15}
+    E_{KS}[n]=T_s[n]+\frac{1}{2}\int\int\frac{n(\bb{r})n(\bb{r}')}{\left|\bb{r}-\bb{r}'\right|}d\bb{r}\,d\bb{r}\,'+\int d\bb{r}\,V_{ext}\,n(\bb{r})+E_{XC}[n],
+\end{equation}
+
+where $T_s[n]$ is the sum of kinetic energy operators of independent particles.
+
+The above expression already contains information about the external potential in the system of independent particles, which will recreate the total energy and the density of the real system.
+This density should minimize the $E_{KS}[n]$ functional.
+The strict procedure of deriving the appropriate single-particle equations is based on the use of the Lagrange multipliers method of minimization with constraints, where the constraints are the orthonormal conditions of single-particle functions (it is worth remembering that these are not functions in the sense of a single-particle approximation, but the so-called Kohn-Sham functions, factorizing multiparticle function).
+Instead of citing a strict procedure here,there will be shown how the components of single-particle operators arise from the basic condition of resetting the functional derivatives of the $E_{KS}[n]$ functional due to single-particle functions (or their complex conjugates).
+
+Thus:
+
+\begin{equation}
+    \label{Eq:KS_derivative}
+    \frac{\delta E_{KS}[n]}{\delta \psi_i^*(\bb{r})}=\frac{\delta T_s[n(\bb{r})]}{\delta \psi_i^*(\bb{r})}+\left(\frac{\delta E_{ext}}{\delta n(\bb{r})}+\frac{\delta E_H}{\delta n(\bb{r})}+\frac{\delta E_{XC}}{\delta n(\bb{r})}\right)\frac{\partial n(\bb{r})}{\partial \psi_i^*(\bb{r})}
+\end{equation}
+
+and using the relation:
+
+\begin{equation}
+    \label{Eq:deriv_relations}
+    \frac{\delta T_s[n(\bb{r})]}{\delta \psi_i^*(\bb{r})}=\frac{1}{2}\nabla_\bb{r}^2\psi_i(\bb{r});\;\;\;\;\frac{\partial n(\bb{r})}{\partial \psi_i^*(\bb{r})}=\psi_i(\bb{r}),
+\end{equation}
+
+taking into account the orthonormal condition of the function $\psi_i(\bb{r})$ leads to the Schr\"odinger type equations:
+
+\begin{equation}
+    \label{Eq:kohn-sham_short}
+    \left(-\frac{1}{2}\nabla^2_\bb{r}+\hat{V}_{KS}(\bb{r})\right)\psi_i(\bb{r})=E_i\psi_i(\bb{r}),
+\end{equation}
+
+in which
+
+\begin{equation}
+    \label{Eq:kohn-sham_pot}
+    \hat{V}_{KS}(\bb{r})=\hat{V}_{ext}(\bb{r})+\frac{\delta E_H}{\delta n(\bb{r})}+\frac{\delta E_{XC}}{\delta n(\bb{r})}=\hat{V}_{ext}(\bb{r})+\hat{V}_H(\bb{r})+\hat{V}_{XC}(\bb{r}).
+\end{equation}
+
+Equations (\ref{Eq:kohn-sham_short}) with Kohn-Sham potential (\ref{Eq:kohn-sham_pot}) take the form of one-particle Schr\"odinger equations and are called Kohn-Sham equations.
+Similar to the Hartree or Hartree-Fock methods, although the equations apply to independent electrons, these electrons interact with all other electrons in the system via the Kohn-Sham potential.
+The solution (\ref{Eq:kohn-sham_short}) is obtained in a \SC\ procedure similar to that used in the Hartree approach.
+The diagram of this procedure is presented in Figure \ref{Fig:scf_kohn-sham}.
+
+Finally, it must be emphasized that, from the theory point of view, the only reference to a real system here is electron density and total energy.
+So the Kohn-Sham functions and their corresponding energies do not have a physical meaning in themselves.
+Nevertheless, the eigenvalues turn out to be a very good starting point for calculating the energy of single-particle excitations, and the eigenfunctions are a good approximation of single-particle functions, or the starting point of the methods of many-body perturbation calculus (post-\DFT\ methods).
+
+\begin{figure}[!htbp]
+    \centering
+    \includegraphics[width=1.\textwidth]{/theory/scf_KS.pdf}
+    \caption{\SC\ procedure of solving Kohn-Sham equations.}
+    \label{Fig:scf_kohn-sham}
+\end{figure}
+
+In the Kohn-Sham equations, the correlation-exchange potential appears as a functional derivative with respect to energy.
+It is a local potential, i.e. its effect on the function in the positional representation is based on simple multiplication and includes a correction resulting from the typically quantum interactions: exchange and correlation, related to particle indistinctness, antisymmetry of the fermion wave function, and the particle's striving for maximum separation in the phase space.
+The Kohn-Sham equations seemingly resemble the Hartree equations supplemented with a correction, but the physical sense of their solutions is completely different.
+The Hartree approximation is basically a one-particle approximation (it describes the physics of a single particle in a system), while the only reference of the solutions of Kohn-Sham equations to a real system is the electron density, calculated from the eigenfunctions of these equations.
+Nevertheless, as it will be shown later, the Kohn-Sham energies describe the energies of single-particle excitation very well, and the wave functions are a very good starting point in the theory of perturbations of many-body systems (post-\DFT\ methods).
+Thus, the theory of the density functional in condensed matter physics has advantages over the Hartree--Fock approximation from many points of view (especially computational efficiency).
+The key aspect, however, is to know the exchange--correlation energy.
+Some approximations are needed here because we do not know the explicit form of this energy, which inspired numerous theoretical research and thus the development of the independent \DFT\ branch.
+The most important approximations are presented below.
+
+\textbf{Local Density Approximation (\LDA)}
+
+The first successful attempt to introduce a functional was the pioneering work of Kohn and Sham from 1965 \cite{kohn_sham_eq}, in which they developed a exchange--correlation functional based on an interacting uniform electron gas, for which this function can be determined with high accuracy.
+Although this is the simplest approach, it turned out that the calculation results of various material properties are surprisingly consistent with the experiment, therefore this functional is still used today (with various modifications).
+The idea behind this approximation is the assumption that the exchange--correlation energy in a uniform electron gas is locally the same as in a uniform gas with the same density as at a given point in the system.
+Hence the name, Local Density Approximation (\LDA).
+The functional of energy is thus:
+
+\begin{equation}
+    \label{Eq:Exc_LDA}    
+    E_{XC}^{LDA}[n(\bb{r})]=\int d\bb{r}\, n(\bb{r})\varepsilon_{XC}^{UEG}[n(\bb{r})],
+\end{equation}
+
+where the exchange--correlation energy of uniform electron gas (UEG) $\varepsilon_{XC}^{UEG}[n(\bb{r})]$ can be written as the sum of the correlation term $\varepsilon_{C}^{UEG}[n(\bb{r})]$ and exchange $\varepsilon_{X}^{UEG}[n(\bb{r})]$:
+
+\begin{equation}
+    \label{Eq:epsxc_LDA}    
+    \varepsilon_{XC}^{UEG}[n(\bb{r})]=\varepsilon_{X}^{UEG}[n(\bb{r})]+\varepsilon_{C}^{UEG}[n(\bb{r})].
+\end{equation}
+
+Consequently, $E_{XC}^{LDA}[n(\bb{r})]$ is distributed similarly:
+
+\begin{equation}
+    \label{Eq:Exc_LDA2}
+    \begin{aligned}
+        E_{XC}^{LDA}[n(\bb{r})]&=\int d\bb{r}\, n(\bb{r})\left(\varepsilon_{X}^{UEG}[n(\bb{r})]+\varepsilon_{C}^{UEG}[n(\bb{r})]
+        \right)=\\
+        &=\int d\bb{r}\, n(\bb{r})\varepsilon_{X}^{UEG}[n(\bb{r})]+\int d\bb{r}\, n(\bb{r})\varepsilon_{C}^{UEG}[n(\bb{r})]=\\
+        &=E_{X}^{LDA}[n(\bb{r})]+E_{C}^{LDA}[n(\bb{r})],
+    \end{aligned}
+\end{equation}
+
+thus
+
+\begin{equation}
+    \label{Eq:Ex_LDA}    
+    E_{X}^{LDA}[n(\bb{r})]=\int d\bb{r}\, n(\bb{r})\varepsilon_{X}^{UEG}[n(\bb{r})]
+\end{equation}
+\begin{equation}
+    \label{Eq:Ec_LDA}    
+    E_{C}^{LDA}[n(\bb{r})]=\int d\bb{r}\, n(\bb{r})\varepsilon_{C}^{UEG}[n(\bb{r})].
+\end{equation}
+
+The form of the exchange energy $\varepsilon_{X}^{UEG}[n(\bb{r})]$ can be determined analytically.
+In a uniform electron gas the wave functions are plane waves and calculating for such functions the expected value of the exchange operator (\ref{Eq:exchange potential}) gives:
+
+\begin{equation}
+    \label{Eq:epsx_LDA}    
+    \varepsilon_{X}^{UEG}[n]=\frac{-3}{4\pi}\left(3\pi^2n\right)^\frac{1}{3}=\frac{-3}{4\pi}k_F,
+\end{equation}
+
+where $k_F=\left(3\pi^2n\right)^\frac{1}{3}$ is the Fermi wave vector for uniform electron gas, defining a reciprocal space sphere containing all occupied states.
+Putting \ref{Eq:epsx_LDA} into \ref{Eq:Ex_LDA} we get the final expression for the exchange energy functional in \LDA:
+
+\begin{equation}
+    \label{Eq:Ex_LDA_final} 
+    \begin{aligned}
+        E_{X}^{LDA}[n(\bb{r})]&=\int d\bb{r}\, n(\bb{r})\varepsilon_{X}^{UEG}[n(\bb{r})]=\int d\bb{r}\, n(\bb{r})\frac{-3}{4\pi}\left(3\pi^2n(\bb{r})\right)^\frac{1}{3}\\
+        &=-\frac{3}{4}\left(\frac{3}{\pi}\right)^\frac{1}{3}\int d\bb{r}\,n(\bb{r})^\frac{4}{3}.
+    \end{aligned}
+\end{equation}
+
+The correlation energy form, on the other hand, is known in the analytical form only within the limits of high and low density ($r_s \rightarrow 0$ and $r_s \rightarrow \infty$, where $r_s$ is the so--called Seitz radius, i.e. the radius of the sphere containing one electron on average $n=1/\frac{4\pi}{3}r_s^3$).
+These boundaries are detailed in \cite{lda_highlow}.
+In the next step, using the quantum Monte Carlo method, based on these limits, the final function $\varepsilon_C^{UEG}[n]$ can be determined with an accuracy close to the actual solution.
+The first parameterization was made by Ceperley and Alder \cite{ceperley}, and the most commonly used parameterization today is the one made by Perdew and Wang (PW$92$) \cite{perdew_wang}.
+The \LDA\ functional is also important in the construction of more advanced functionals, provided that the new functionals in the case of uniform electron gas should give results consistent with the results of the \LDA.
+Obviously, the more the density varies in the real system, the more the \LDA\ approximation results will differ from reality.
+In the great majority of cases, the exchange energy is underestimated and the correlation energy is overestimated.
+The energies of atomic bonds are usually overestimated, and the bond lengths and lattice constants are smaller than the experimental ones.
+That is why the \LDA\ functional is commonly referred to as "hard".
+
+\textbf{Generalized gradient approximation (\GGA)}
+
+\LDA\ functionals can generally be written as \ref{Eq:Exc_LDA}, where $\varepsilon_{XC}[n(\bb{r})]$ depends only on the local electron density.
+For \GGA\ functionals, local density dependency is improved by adding an additional dependency on density \emph{gradient} (hence the name, \GGA\ - \emph{Generalized Gradient Approximation}) in the space $\nabla n(\bb{r})$, thus making the \GGA\ functional semi-local:
+
+\begin{equation}
+    \label{Eq:general_GGA} 
+    E_{XC}^{GGA}[n]=\int d\bb{r}\, n(\bb{r})\varepsilon_{XC}^{GGA}[n(\bb{r}),\nabla n(\bb{r})].
+\end{equation}
+
+In practice, instead of $\nabla n(\bb{r})$, $s(\bb{r})=\left|\nabla n(\bb{r}) \right|/(2k_F(\bb{r})n(\bb{r}))$, reduced dimensionless gradient is introduced, which guarantees a simplified derivation of the scale invariance.
+Similarly, $n(\bb{r})$ can be replaced by the Seitz radius $r_s(\bb{r})$ introduced before.
+Taking into account the requirements for the correct description of uniform electron gas (as in \LDA) and certain restrictions imposed by the so--called exchange--correlation hole \cite{martin}, one can write the formulas for the correlation and exchange part of \GGA\ as corrections to the \LDA:
+
+\begin{equation}
+    \label{Eq:correlation_GGA} 
+    E_{C}^{GGA}[n]=\int d\bb{r}\, n(\bb{r})\left(\varepsilon^{UEG}_{C}[r_s(\bb{r})]+H[r_s(\bb{r}),s(\bb{r})]\right)
+\end{equation}
+\begin{equation}
+    \label{Eq:exchange_GGA} 
+    E_{X}^{GGA}[n]=\int d\bb{r}\, n(\bb{r})\varepsilon^{UEG}_{X}F_X[s(\bb{r})],
+\end{equation}
+
+where $H$ is the correlation energy correction and $F_X$ is the exchange gain factor.
+Entering the appropriate $H$ and $F_X$ forms and their parameterization allows for the construction of new \GGA\ functionals, such as the most commonly used \PBE\ (Perdew, Burke, Ernzerhof) \cite{pbe}, or its variation, optimized for the correct description of constant lattice of the crystals, PBEsol \cite{pbesol}.
+The general form of the correlation and exchange functional can be written using the so--called gain factor $F_{XC}$:
+
+\begin{equation}
+    \label{Eq:enhancement_GGA} 
+    E_{XC}^{GGA}[n]=\int d\bb{r}\, n(\bb{r})\varepsilon^{UEG}_{X}n(\bb{r})]F_{XC}[r_s(\bb{r}),s(\bb{r})]
+\end{equation}
+
+The \GGA\ functionals offer a significant improvement over the \LDA.
+The energy of correlation is much closer to the real one, the uncertainty of determining the energy of bonds is reduced by about two times, as well as the lengths of bonds and lattice constants (although in this case they are usually overestimated).
+
+\textbf{meta-GGA functionals (mGGA)}
+
+As in the transition from \LDA\ to \GGA, functionals of the meta-GGA (mGGA) family introduce additional variables as $\varepsilon$ arguments in the equation \ref{Eq:general_GGA}.
+The general form of this type of functionals can be written as
+
+\begin{equation}
+    \label{Eq:general_mGGA} 
+    E_{XC}^{mGGA}[n]=\int d\bb{r}\, n(\bb{r})\varepsilon_{XC}^mGGA[n(\bb{r}),\nabla n(\bb{r}), \tau(\bb{r})],
+\end{equation}
+
+where the newly introduced variable $\tau(\bb{r})$ is the so--called kinetic electron density:
+
+\begin{equation}
+    \label{Eq:kinetic_density} 
+    \tau(\bb{r})=\frac{1}{2}\sum_i\left|\nabla\psi_i(\bb{r})\right|^2.
+\end{equation}
+
+This form of a functional allows many more requirements to be met by an ideal functional.
+As before, you can often meet the dimensionless reduced form of the kinetic electron density:
+
+\begin{equation}
+    \label{Eq:kinetic_density_alpha} 
+    \alpha=\frac{\tau-\tau^W}{\tau^{UEG}}
+\end{equation}
+
+where $\tau^{UEG}=\sfrac{3}{10}\left(3\pi^2\right)^{\sfrac{2}{3}}n^{\sfrac{5}{3}}$ is the exact kinetic density of the uniform electron gas, and $\tau^{W}=\sfrac{|\nabla n|^2}{8n}$.
+
+\textbf{Functional \mBJLDA\ (TB$09$)}
+
+In the literature, dozens of different meta-GGA functionals with different levels of complexity or parameterizations aimed at accurately reflecting different physical properties can be found.
+At this point, however, there will only be mentioned one: \mBJLDA\ (TB$09$) \cite{mBJLDA2}.
+It deserves to be specified, as it is a functional constructed in such a way that the difference between the last planted and the first vacant Kohn-Sham band, most often interpreted as an energy gap, reflects the closest to the experimental value.
+The functional is used to calculate the electronic band structure.
+
+Its structure is a bit complex and entangled, so the detailed derivation will be skipped and only its most important steps will be shown. This potential is based on several previously introduced potentials.
+The first historically Becke-Russell potential \cite{becke_roussel} was designed to adequately represent the hydrogen exchangeable hole and in its final form it is written as:
+
+\begin{equation}
+    \label{Eq:BeckeRussel} 
+    \hat{V}_X^{BR}(\bb{r})=-\frac{1}{b(\bb{r})}\left(1-e^{-x(\bb{r})}-\frac{1}{2}x(\bb{r})e^{-x(\bb{r})}\right),
+\end{equation}
+
+where $x$ is the parameter computed from $n(\bb{r}), \nabla n(\bb{r}), \nabla^2 n(\bb{r})\text{ i }\tau(\bb{r})$, and $b=\left(x^3e^{-x}/(8\pi n(\bb{r}))\right)^{1/3}$.
+
+For readability, the four-argument designation of a functional will be omitted in this chapter.
+The Becke-Johnson potential \cite{becke_johnson} was intended to reflect the results as close as possible to the exact exchange potential for atoms:
+
+\begin{equation}
+    \label{Eq:BeckeJohnson} 
+    \hat{V}_X^{BJ}(\bb{r})=V_X^{Slater}(\bb{r})+\frac{1}{\pi}\sqrt{\frac{5}{12}}\sqrt{\frac{\tau(\bb{r})}{n(\bb{r})}}.
+\end{equation}
+
+In the mBJ potential, the Slater term $V_X^{Slater}(\bb{r})$ is replaced by the Becke-Russel potential (\ref{Eq:BeckeRussel}) and both terms are scaled by $c$:
+
+\begin{equation}
+    \label{Eq:mbjlda} 
+    \hat{V}_X^{mBJ}(\bb{r})=c\hat{V}_X^{BR}(\bb{r})+(3c-2)\frac{1}{\pi}\sqrt{\frac{5}{12}}\sqrt{\frac{\tau(\bb{r})}{n(\bb{r})}},
+\end{equation}
+
+where the coefficient $ c $ defined by the quantity $\left|\nabla n(\bb{r})\right|/ n(\bb{r})$ related to the distance separating the short--range and long--range Coulomb interactions takes the form:
+
+\begin{equation}
+    \label{Eq:c_mbj}
+    c=\alpha+\beta\sqrt{\frac{1}{V_{cell}}\int_{cell}d\bb{r'}\frac{\left|\nabla n(\bb{r'})\right|}{n(\bb{r'})}},
+\end{equation}
+
+where the parameters $\alpha$ and $\beta$ are the fitting parameters and were chosen to minimize the average absolute error of the determined energy gap in relation to the experimentally measured one.
+Effectively, changing the $ c $ parameter changes the value of the energy gap of the material, and in justified cases, instead of calculating it on the basis of the density in a self-matched procedure, it can be treated as a fitting parameter.
+The correlation potential is entirely borrowed from the \LDA\ approach.
+The resulting \mBJLDA\ potential therefore has the advantages of both $\hat{V}_X^{BJ}$ and $\hat{V}_X^{BR}$ potentials, and consequently brings its behavior much closer to the exact exchange potential.
+It allows for effective determination of the energy gap in high compliance with the experimental one.
+It should be noted that due to the term $\left|\nabla n(\bb{r})\right|/ n(\bb{r})$ this potential is not suitable for use in systems containing a region depleted in electron density (vacuum around molecules or between thin layers).
+
+\ornament
+
+\section{Representation of Kohn-Sham equations, periodic systems}
+
+Solids, in particular semiconductor crystals, are characterized by an organized and periodic arrangement of atoms in their structure.
+These atoms are arranged in the so--called crystal lattice (real), the smallest cell that can be selected, allowing the reconstruction of the entire lattice by applying symmetry operations, is called a \prim.
+This cell spans the vectors $\bb{a_1, a_2, a_3}$, called primitive translation vectors.
+In calculations, it sometimes happens that the unit cell used is not a primitive cell.
+Such a cell is then called a supercell, and vectors spanning it are simply elementary vectors.
+
+The elementary vectors $\bb{a_1, a_2, a_3}$ span the real lattice, which means that any vector $\bb{R}$ of the lattice can be written as:
+
+\begin{equation}
+    \bb{R}=l_1\bb{a}_1+l_2\bb{a}_2+l_3\bb{a}_3,
+    \label{real_lattice}
+\end{equation}
+
+where $l_i$ are natural numbers.
+Let us define a certain set of vectors $\bb{G}$, satisfying the dependency $\bb{G} \cdot \bb{R}=2n\pi$ (this choice will become understandable together with the equation \ref{fourier_wavefunction4}).
+Let's write this set in some basis $\bb{b}_i$:
+
+\begin{equation}
+    \bb{G}=m_1\bb{b}_1+m_2\bb{b}_2+m_3\bb{b}_3,
+    \label{recip_lattice}
+\end{equation}
+
+where, similarly to the equation above, $\bb{m}_i$ are coefficients and $\bb{b}_i$ are the basis vectors.
+Then let's do the dot product:
+
+\begin{equation}
+    \begin{aligned}
+        \bb{G}\cdot\bb{R}&=l_1m_1\bb{a}_1\cdot \bb{b}_1+l_1m_2\bb{a}_1\cdot \bb{b}_2+l_1m_3\bb{a}_1\cdot \bb{b}_3+\\
+        &+l_2m_1\bb{a}_2\cdot \bb{b}_1+l_2m_2\bb{a}_2\cdot \bb{b}_2+l_2m_3\bb{a}_2\cdot \bb{b}_3+\\
+        &+l_3m_1\bb{a}_3\cdot \bb{b}_1+l_3m_2\bb{a}_3\cdot \bb{b}_2+l_3m_3\bb{a}_3\cdot \bb{b}_3=2n\pi
+        \label{dot_prod}
+    \end{aligned}
+\end{equation}
+
+Due to the fact that the base $\bb{b}_i$ is not yet strictly defined, there is some freedom in choosing it.
+So let's take the basis $\bb{b}_i$ which is orthogonal to $\bb{a}_i$:
+
+\begin{equation}
+    \bb{b}_i\cdot\bb{a}_j=2\pi \delta_{ij}.
+    \label{b_to_a}
+\end{equation}
+
+After substituting and dividing by $2\pi$ on both sides, the expression \ref{dot_prod} will simplify to:
+
+\begin{equation}
+    l_1m_1+l_2m_2+l_3m_3=n.
+\end{equation}
+
+It follows that if $l_i$ and $n$ are natural numbers, then $m_i$ must also be natural numbers.
+One can already see the meaning of the vector $\bb{G}$, which from now on will be called the reciprocal lattice vector, and the space spanning the vectors $\bb{b}_i$ -- the reciprocal space.
+What remains to determine is the form of the basis vectors $\bb{b}_i$ with $\bb{a}_i$.
+Using the equation \ref{b_to_a} it may be written:
+
+\begin{equation}
+    \bb{b}_1\cdot \bb{a}_2=\bb{b}_1\cdot \bb{a}_3=0 \Rightarrow \bb{b}_1=\alpha\cdot \left(\bb{a}_2 \times \bb{a}_3\right).
+    \label{dot_prod3}
+\end{equation}
+
+Then, using $\bb{b}_1\cdot\bb{a}_1=2\pi$:
+
+\begin{equation}
+    \bb{b}_1\cdot \bb{a}_1=\alpha\cdot \left(\bb{a}_2 \times \bb{a}_3\right)\cdot \bb{a}_1=2\pi
+    \label{dot_prod4}
+\end{equation}
+
+and find the constant $\alpha$:
+
+\begin{equation}
+    \alpha =\frac{2\pi}{ \bb{a}_1\cdot\left(\bb{a}_2 \times \bb{a}_3\right)}.
+    \label{dot_prod5}
+\end{equation}
+
+Combining this result with equation \ref{dot_prod3} gives the final form of the vector $\bb{b}_1$:
+
+\begin{equation}
+    \bb{b}_1=2\pi\frac{\bb{a}_2\times\bb{a}_3}{\bb{a}_1\cdot\left(\bb{a}_2\times\bb{a}_3\right)}.
+    \label{recip_vectors0}
+\end{equation}
+
+Carrying out the same procedure for the remaining two vectors $\bb{b}_i$ gives:
+
+\begin{equation}
+    \begin{aligned}
+        \bb{b}_2&=2\pi\frac{\bb{a}_3\times\bb{a}_1}{\bb{a}_2\cdot \left(\bb{a}_3\times\bb{a}_1\right)}\\
+        \bb{b}_3&=2\pi\frac{\bb{a}_1\times\bb{a}_2}{\bb{a}_3\cdot \left(\bb{a}_1\times\bb{a}_2\right)}.
+    \end{aligned}
+    \label{recip_vectors}
+\end{equation}
+
+The vectors $\bb{b}_i$ will be called elementary vectors of the reciprocal lattice.
+The denominator of all three expressions is equal to the volume of the parallelepiped based on the vectors $\bb{a}_i$, hence the real volume of the crystal unit cell.
+It is worth noting here that as the volume of the real unit cell increases, the volume of the unit cell in the reciprocal space will decrease.
+
+As mentioned earlier, the smallest cell in real space, which is periodically duplicated and can reproduce the entire crystal lattice, is called a \prim, and the vectors that compose it are primitive translation vectors (or simply primitive vectors).
+By creating with them primitive vectors of the reciprocal lattice (\ref{recip_vectors}) we will get a primitive cell of the reciprocal lattice.
+A particular choice of such a cell is the Wigner-Seitz cell, referred to as the (first) Brillouin zone (\BZ).
+In solid state physics, the vectors inside this zone, called vectors $\bb{k}$, are of particular importance because they describe plane waves with lengths greater than the real lattice periods.
+Special attention deserves the so--called high symmetry points located in the centers of the walls, edges, corners of the \BZ\ and at its center.
+The latter, for $\bb{k}=0$, is always called the $\Gamma$ point.
+
+Kohn-Sham equations require a specific representation, it is of key importance in the numerical implementation of solving them.
+In the form \ref{Eq:kohn-sham_short} they are written in the position representation, rarely used in numerical calculations.
+The positional representation is used for obvious reasons when solving the Kohan-Sham equations for single atoms, where a spherical symmetry is assumed and a radial lattice is introduced.
+However, for the periodic systems described above (crystal, crystal surface, thin-layer systems), the obvious choice is the base of plane waves indexed with the reciprocal lattice vectors.
+
+The Kohn-Sham equations \ref{Eq:kohn-sham_short} are formally identical to the Schr\"odinger equations for a particle in the periodic potential, therefore the Bloch theorem applies here, which says that the wave function that is a solution to such an equation must have the form:
+
+\begin{equation}
+    \psi_{nk}(\bb{r})=u_{nk}(\bb{r})e^{ik\cdot\bb{r}},
+    \label{bloch_theorem}
+\end{equation}
+
+where $u_{nk}(\bb{r})$ has the periodicity of both real and reciprocal lattices.
+The full picture of solutions is described by the wave vector $k$ belonging to the \BZ, and the quantum number $n$ indexing the eigenenergies for a given vector $k$.
+As a result, the Kohn-Sham energies create the energetic Kohn-Sham band structure of the system (similar to the one-particle problem).
+At this point, it is worth recalling that from the theory point of view, this structure has no direct physical reference, but is very often treated as a very good starting point for determining one-particle excitations.
+
+Each periodic function $f(\bb{r})$ can be represented as a Fourier series:
+
+\begin{equation}
+    f(\bb{r})=\sum_GC_{G}e^{i\bb{G}\cdot\bb{r}}.
+    \label{fourier_wavefunction}
+\end{equation}
+
+Using the fact of periodicity of the wave function in real space:
+
+\begin{equation}
+    f(\bb{r}+\bb{R})=f(\bb{r}),
+    \label{wf_lattice_period}
+\end{equation}
+
+where $\bb{R}$ is the net vector of the layout, and using \ref{fourier_wavefunction} one can write:
+
+\begin{equation}
+    f(\bb{r}+\bb{R})=\sum_GC_Ge^{i\bb{G}\cdot(\bb{r}+\bb{R})}=\sum_GC_Ge^{i\bb{G}\cdot\bb{r}}e^{i\bb{G}\cdot\bb{R}}.
+    \label{fourier_wavefunction2}
+\end{equation}
+
+It is easy to notice that in order for the above equation to satisfy the dependency \ref{wf_lattice_period}, then:
+
+\begin{equation}
+    \sum_GC_Ge^{i\bb{G}\cdot\bb{r}}e^{i\bb{G}\cdot\bb{R}}=\sum_GC_Ge^{i\bb{G}\cdot\bb{r}},
+    \label{fourier_wavefunction3}
+\end{equation}
+
+which can only be satisfied when
+
+\begin{equation}
+    e^{i\bb{G}\cdot\bb{R}}=1.
+    \label{fourier_wavefunction4}
+\end{equation}
+
+This means that $\bb{G}\cdot\bb{R}=2n\pi$.
+This equation defines the reciprocal lattice that was described above.
+
+Finally, we get the expression for the periodic part of the Bloch function in the form of a Fourier series:
+
+\begin{equation}
+    u_{nk}(\bb{r})=\sum_GC^{nk}_G\left(\frac{1}{\sqrt{\Omega}}e^{i\bb{G}\cdot\bb{r}}\right),
+    \label{planewave_basis}
+\end{equation}
+
+where the expression in parentheses is normalized to the unit cell volume $\Omega$, being an orthonormal basis, plane waves.
+
+The summation in the above series is infinite, which cannot be realized in the numerical implementation, the series must be ended with a certain expression $G_{max}$.
+To understand the consequences of such an operation, remember that $G$ is the wavelength vector, that is $G=2\pi/\lambda$, where $\lambda$ is the wavelength.
+It can be seen that the larger the vector $G$, the smaller the corresponding wavelength $\lambda$.
+The vector $G_{max}$ corresponds to the minimum wavelength $\lambda_{min}$, which approximately determines the maximum spatial resolution of the bounded Fourier series representation of the function.
+In other words, if a periodic function is not locally high--variable, it requires a smaller $G_{max}$ in its representation, but if it does, a good representation of it requires a large $G_{max}$.
+On the other hand, it should be remembered that the spatial frequency is related to the kinetic energy according to dependencies $E_k=G^2/2$ (in Hartree units).
+Based on this fact, one can find, for physical systems, a very convenient way to choose $G_{max}$, namely, we define the maximum kinetic energy we can expect in the system and we define the sphere in the reciprocal space with the radius $G_{max}$ satisfying the equation:
+
+\begin{equation}
+    E_{cut}=\frac{\hbar^2G_{max}^2}{2m_e}.
+    \label{ecut}
+\end{equation}
+
+The $E_{cut}$ energy is called the cut--off energy.
+Each vector $G$ within a sphere so defined is taken into account in the series \ref{planewave_basis}, the rest are not.
+For example, it is known that the so--called core electrons in atoms (especially in heavy atoms) have high kinetic energies (and at the same time strongly localized wave functions).
+Including them in the calculations would require very high cut-off energies, i.e. a very large base to represent the Kohn-Sham equations, which significantly increases the required computing resources.
+On the other hand, however, it is known that the core electrons do not affect the basic physical properties of the systems (low temperatures, low-energy external disturbances).
+There are ways that will be discussed later so that there is no need to include them and thus limit the base, needed for representation.
+
+The cut--off energy $E_{cut}$ is a computational control parameter and must be a subject to convergence tests for each system.
+At the same time, it is universal to some extent, e.g. if the same system is tested in different configurations (supercells, surface, thin layers, etc.), convergence tests are no longer necessary.
+
+Finally, some general remarks on the representation of the Hamiltonian in the equations \ref{Eq:kohn-sham_short} in the base of plane waves.
+Changing the representation leads to the matrix equation:
+
+\begin{equation}
+    \hat{H}(\bb{k})\bb{C}(\bb{k})=E\bb{C}(\bb{k}),
+    \label{KS_PW}
+\end{equation}
+
+where $\hat{H}(\bb{k})$ is the matrix $N\times N$ ($N$ -- number of plane waves).
+Matrix elements are Fourier transforms of Hamiltonian components in the position representation, performed in calculations with the aid of the efficient Fast Fourier Transform (FFT) algorithm.
+Determining the Kohn-Sham eigenvalues requires diagonalization of the Hamiltonian $\hat{H}(\bb{k})$, which is a numerically costly operation considering the fact that the number of plane waves can reach many thousands in some systems.
+It should be mentioned here that, apart from the theory and development of computer technologies, the development of computational algorithms has become a separate and important field of research in the field of \abinitio\ computations.
+For example, there are effective methods for determining the lowest few eigenvalues (for occupied states) of large Hermitian matrices.
+
+As already known, the basic quantities in the \DFT\ are the total energy (\ref{KS15}) of the system and the electron density (\ref{Eq:density_sum_wfs}).
+In the case of electron density, the expression \ref{Eq:density_sum_wfs} takes the general form:
+
+\begin{equation}
+    \label{Eq:density_sum_wfs_2}
+    n(\bb{r})=D\sum_{n}\int_{BZ}dk\left|u_{nk}(\bb{r})\right|^2,
+\end{equation}
+
+where $D$ is the density of states in the $k$ space, and the summation and integration here only includes occupied states.
+
+As it is shown, determining the electron density requires integration over the \BZ, which is usually a polyhedron with complex geometry.
+At first glance, the problem seems difficult, but if one notices that the function $\left|u_{nk}(\bb{r})\right|^2$ is a real periodic function in reciprocal space, and integration over \BZ\ is equivalent to the integration over a \prim, the problem simplifies considerably.
+The mathematical idea is as follows: the function $\left|u_{nk}(\bb{r})\right|^2$ can be expanded into a Fourier series (this time in the reciprocal space, i.e. base functions -- plane waves -- are indexed with real lattice vectors).
+The expansion coefficients are projections of this function onto base functions, i.e. integrals over the \prim\ (or \BZ) from the product of the function and the base function.
+It turns out that if we limit the infinite Fourier series to a certain number of first terms, we limit the representation of the function to a subspace spanning on the basis functions included in the series, and the integration can be converted into summing over a certain even grid of $k$ points, and it is the more accurate the denser is $k$ points grid is.
+The first term of the series (corresponding to the base constant function) is the integral we are looking for and, as one can see, it comes down to summing over an even grid of $k$ points.
+The closer the exact integral value, the denser the mesh.
+In addition, it is taken into account that due to symmetry, some $k$ points in \BZ\ are equivalent, so instead of evaluating the function at all $k$ points of the grid, it is enough to identify the set of non--equivalent points (they are located in the so-called irreducible part of \BZ) and multiply the calculated for them function values by the multiplicity of the occurrence of a given $k$ point in \BZ.
+The expression \ref{Eq:density_sum_wfs_2} takes the form:
+
+\begin{equation}
+    \label{Eq:density_sum_wfs_3}
+    n(\bb{r})=D\sum_{n}\sum_{k_s}\left|u_{nk_s}(\bb{r})\right|^2,
+\end{equation}
+
+where $k_s$ are the so--called special $k$ points, and the method is called the Monkhorst-Pack method of special $k$ points, from the names of the authors of the work \cite{monkhorst} as standard cited in this context.
+
+Technically, it boils down to set, in the input data, the numbers of divisions of elementary vectors of the reciprocal lattice and the shifts.
+The latter are the grid shift vectors by half the values of the grid parameters and may lead to a reduction of $k_s$ while maintaining the integration accuracy.
+The number of divisions is a control parameter for the calculation and must be the subjected to convergence tests.
+
+\ornament
+
+\section{Representations of atoms, pseudopotentials, PAW}
+
+In order to describe the atomic system considered in the calculations, it is necessary to have information about the atoms that make up the system.
+In principle, it would be possible to set the appropriate Coulomb potentials from atomic nuclei and take into account all the electrons in the system.
+However, this approach would require very large computing resources (CPU time and memory) and is unnecessary.
+It turns out (as mentioned earlier) that the electron shells present in individual atoms making up the system have a different impact on the properties of the entire system.
+Electrons are indistinguishable particles, therefore only conventionally they can be classified in terms of the wave functions that describe them.
+And so, there are two criteria for the distribution of electrons, the energy criterion -- due to their own energies, and the spatial criterion -- due to the average distance from the atomic nucleus.
+According to the first criterion, the so--called core electrons with very low own energies (even hundreds of eV) and strongly localized wave functions.
+These electrons do not affect the basic physical properties of the systems (they are beyond the energy range) and taking them into account would require very large base of plane waves.
+Their presence can therefore be neglected when calculating the properties of the systems, only the fact that they shield the nucleus (reducing its charge) and, in a model way, that they interact with other electrons is taken into account.
+The group of electrons complementary to the core electrons, the so--called valence electrons with relatively high energies, have a key impact on the properties of the systems.
+Functions describing the states of valence electrons must be orthogonal to the core states, therefore unfortunately they have fast--changing oscillating parts in the region close to the nucleus.
+Here the spatial criterion comes in handy.
+In the atomic system the area up to a certain cut--off radius is seen as from the outside, so only its total charge is important, which can additionally be treated as having spherical symmetry.
+Apart from the cut--off radius, the real forms of the wave functions and the potentials that form them are important, because these parts form atomic bonds.
+It was from such considerations that the idea of pseudopotential and pseudoatom was born.
+The construction of the pseudopotential is well illustrated in Fig. \Ref{Fig:psp}.
+The focus is only on the function of the valence electron.
+The so--called pseudofunction is constructed in such a way that below a certain cut--off radius $r_c$ the oscillating part of a real function is replaced  with a smooth model function, but selected so that the integral of the square of its module is the same as the real function (i.e. it gives the same contribution to the charge of this area).
+Above this radius, the pseudofunction coincides with the real function, and furthermore both parts of the pseudofunction (below and above $r_c$) must stitch smoothly at $r_c$.
+In this way, the norms of true and pseudo--function are the same.
+An analytical inversion of the Kohn-Sham equation with an inserted pseudo--function leads to a shielded pseudo--potential, i.e. one that recreates the constructed pseudo--function.
+The last step is the procedure of screening the pseudopotential, i.e. removing from it all the components related to the electron--electron interaction, both between the valence electrons and the valence electrons and the core (the latter requires special procedures, which is omitted here).
+
+There is some freedom in the procedure for constructing the pseudopotential described above.
+First, the division of electrons into valence and core is arbitrary.
+Further, the selection of the cut--off radius $r_c$, the selection of the parameterization of the core part of the valence function, the selection of the reference energy in the analytical inversion of the Kohn-Sham equation, the selection of the core density model in the screening procedure.
+Furthermore, it is not difficult to see that the pseudopotential constructing procedure must be independently performed for the $s$, $p$, and $d$ states.
+Thus, $3$ components of a pseudopotential for one problem are created.
+The operation of these components consists in first projecting the wave function onto the spherical harmonics $s$, $p$, and $d$ and only then multiplying this projection by the appropriate component of the pseudopotential.
+Thus, the pseudopotential becomes non--local.
+Here are followed by other mathematical facilities, which, however, will be omitted in this study.
+
+\begin{figure}[!htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{/theory/psp.pdf}
+\caption{Schematic drawing showing the full wave potential and function (solid line) and the pseudopotential together with the corresponding wave pseudofunction (dashed lines) as a function of the atomic radius. The cut-off radius of $r_{cut}$ is marked with a vertical dashed line.}
+\label{Fig:psp}
+\end{figure}
+
+The crowning achievement of the idea of psedopotentials are the so--called Projector Augmented Waves (\PAW), where the contribution to the expected values of various physical quantities (electron density, total energy) from the core area, defined by the cut-off radius, is obtained from a more adequate representation: the base of spherical harmonics.
+
+In practice, ready-made databases of pseudopotentials are most often used, without the need to generate them on your own, but the awareness of what they are and how they are constructed is helpful in computational practice.
+
+Many details and references regarding this contents can be found in the book \cite{martin}.
+
+\ornament
+\section{Computer codes, High Power Computers}
+
+Due to complexity of theory and high computing resources consumption, usually calculations are not conducted by simple self--written code, which would be difficult to provide rich variety of functions and low level optimization.
+That is why most of \DFT\ scientists rather run available (free to use or commercial) packages.
+There is a vast variety of well--written and optimized codes maintained by large group of scientists to choose from.
+Each has its advantages and disadvantages.
+It this part there will be described most known of them and those used to achieve results presented in this work.
+
+
+
+\ornament

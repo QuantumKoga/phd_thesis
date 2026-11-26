@@ -1,0 +1,165 @@
+\chapter{Structural Factor}
+\label{chap:wurtzite}
+
+\section*{Chapter description}
+
+This chapter presents the structural, elastic and electronic properties of group IV materials (C, Si and Ge) in the wurtzite structure, with particular emphasis on the effects of strain. The first part focuses on the equilibrium structural parameters, including lattice constants and the internal parameter \(u\), as well as the bulk moduli, elastic constants, pressure coefficients and Poisson's ratios. The stability of the wurtzite phase is also examined by comparing its formation energy with that of the zinc blende structure under different strain conditions.
+
+
+The second part is devoted to the electronic properties of the investigated materials. Their band structures, fundamental band gaps, spin-orbit and crystal-field splittings, and deformation potentials are analysed. Particular attention is paid to strain-induced changes in the character and magnitude of the fundamental band gap, as well as to the effective masses of electrons and holes. The results reveal the possibility of inducing a direct band gap in selected materials and highlight the potential of wurtzite Ge for infrared optoelectronic applications. Finally, the calculated results for Si are compared with available theoretical reference data, providing a basis for assessing the reliability of the present calculations.
+
+
+All calculations provided here were performed at the Wrocław Centre of Networking and Supercomputing.
+In all the \abinitio\ calculations performed within this chapter, the VASP package \cite{vasp1} has been used, with \LDA, \PAW\ pseudopotentials \cite{vasp2, paw}, Perdew and Wang correlation part of the functional \cite{pw} (\PAW), and the Tran and Blaha modified Becke Johnson functional TB-mBJ (sometimes referred to as \mBJLDA) \cite{tbtb} for the exchange part.
+\ornament
+
+\section{Structural and elastic properties}
+
+As in the Chapt. \ref{chap:strains}, the investigations began with achieving parameters of equilibrium wurtzite structures for investigated materials (C, Si and Ge).
+The symmetry of this type of systems has a unique feature.
+Some of the atomic sites may flow along $c$ lattice vector direction without changing the symmetry.
+Thus an additional parameter $u$ is present in the relaxation procedure.
+In Fig. \ref{Fig:wz_cell} blue arrow represents $\Vec{c}$ lattice vector, while orange one represents $u\cdot \Vec{c}$.
+The bulk modulus $B_0$, it's pressure derivative $B'_0$ and elastic constants (from $c_{11}$ to $c_{33}$) were also evaluated.
+\begin{table}[!htbp]
+	\centering
+	\caption{Elastic parameters.}
+	\label{Tab:wz_elastic}
+	\begin{tabular}{|c|c|c|c|c|}
+		\hline
+		& C & Si & Si--ref \cite{wz_si_strain_dft} & Ge \\ \hline
+		a (\AA) & 2.498 & 3.823 & 3.828 & 4.005 \\ \hline
+		c (\AA) & 4.159 & 6.323 & 6.325 & 6.594 \\ \hline
+		u & 0.374 & 0.374 & 0.374 & 0.375 \\ \hline
+		$B_0$ (GPa) & 450 & 94 & 92.8 & 67 \\ \hline
+		$B'_0$ & 3.65 & 4.57 & 4.24 & 4.71 \\ \hline
+		$c_{11}$ (GPa) & 1219 & 187 & 237 - $c_{12}$ & 125 \\ \hline
+		$c_{12}$ (GPa) & 106 & 54 & 237 - $c_{11}$ & 54 \\ \hline
+		$c_{13}$ (GPa) & 19 & 38 & 317 & 22 \\ \hline
+		$c_{33}$ (GPa) & 1332 & 213 & 313 & 162 \\ \hline
+	\end{tabular}
+\end{table}
+
+The only reference data found in the literature are for Si \cite{wz_si_strain_dft}.
+Very satisfactory agreement of these data with those obtained in this work can be seen (see Tab. \Ref{Tab:wz_elastic}). The lattice constants differ on third decimal point, while the bulk modulus and the elastic constants differ no more than 10 GPa.
+
+In Tab. \ref{Tab:wz_pressure} the pressure related to isotropic strain is presented in the form of the linear ($b$) and the quadratic ($a$) coefficients.  
+
+\begin{table}[!htbp]
+	\centering
+	\caption{Pressure coefficients.}
+	\label{Tab:wz_pressure}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		& C & Si & Ge \\ \hline
+		$a$ (GPa) & -0.79 & -0.19 & -0.14 \\ \hline
+		$b$ (GPa) & 13.45 & 2.81 & 2.00 \\ \hline
+	\end{tabular}
+\end{table}
+
+The Poisson ratios, both for uniaxial and biaxial strains are shown in  Tab. \ref{Tab:wz_Poisson}.
+
+\begin{table}[!htbp]
+	\caption{Poisson's ratios ($\nu$) for axial (type 1) and biaxial (type 2) strains.}
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		material & 1 & 2 \\ \hline
+		C     & 0.02        & 0.03  \\ \hline
+		Si    & 0.16        & 0.38  \\ \hline
+		Ge    & 0.13        & 0.29  \\ \hline
+		Sn    & 0.18        & 0.44  \\ \hline
+	\end{tabular}
+	\label{Tab:wz_Poisson}
+\end{table}
+
+The formation energies as functions of strain are presented in Fig. \ref{Fig:wz_formation}
+
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=.8\textwidth]{/wurtzite/formation.pdf}
+	\caption{Formation energy of group IV materials (calculated as energy per atom in zinc blend minus wurtzite). $pl$ stands for planar strains in zinc blend (111) and wurtzite (001), while $iso$ stands for isotropic strains for both systems.}
+	\label{Fig:wz_formation}
+\end{figure}
+
+Because of the lack of experimental data, the elastic properties are compared with those of the zinc blend ones.
+Despite the change in the structure, the chemical trends are preserved.
+Both the elastic constants and the bulk modulus are very high for C and decrease while moving downward the periodic table.
+The related to isotropic strains hydrostatic pressure also shows the toughness of diamond.
+As in zinc blend structure, wurtzite systems show slight non--linear behaviour of pressure induced by strain.
+Calculated Poisson's ratios shows similar behavior to the zinc blende ones.
+At biaxial strains they are bigger than at axial ones, and the more massive atom the higher is the value (with exception of Ge, which has  lower value than for Si). On the contrary, the ratios do not exceed 0.5, even in biaxial cases.
+
+The analysis of the formation energy as dependent on strain shows that only Sn seems to energetically prefer the wurtzite structure,  under tensile isotropic strain.
+In every other case, preferable is the zinc blend structure.
+Moreover, the more strained system (no matter compressive or tensile) the more energetically preferable is the zinc blend over wurtzite structure.
+On the other hand, the value of difference of energy per atom is rather small (excluding isotropic Sn, below $-0.001\ eV$) which means that the  energetic criterion is of a lower meaning in determination of system preferences.
+
+\ornament
+
+\section{Electronic structure}
+
+The second part of the results concern the electronic structure properties.
+As in Chpt. \ref{chap:strains}, the main focus is given to strain effects. In the first step the electronic band structures along  paths containing high symmetry directions have been evaluated. 
+This allowed us to the find direct and the indirect gaps and, what is of crucial meaning, to identify the fundamental gaps. In the following steps the effective masses at band extrema have been evaluated and finally the deformation potentials. Table \ref{Tab:wz_electronic} shows the basic parameters at equilibrium state along with deformation potentials for each of the investigated materials.
+
+\begin{table}[!htbp]
+	\centering
+	\caption{Electronic band structure parameters.}
+	\label{Tab:wz_electronic}
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		& C & Si & Ge \\ \hline
+		$E_g^\Gamma$ (eV) & 6.517 & 1.649 & 0.362 \\ \hline
+		$E_g^M$ (eV) & 5.800 & 1.015 & 0.897 \\ \hline
+		$E_g^K$ (eV) & 5.318 & 1.471 & 1.879 \\ \hline
+		$\Delta_{so}$ (eV) & 0.011 & 0.048 & 0.272 \\ \hline
+		$\Delta_{cr}$ (eV) & 0.516 & 0.351 & 0.251 \\ \hline
+		$D_1$ & 0.43 & 5.38 & 0.34 \\ \hline
+		$D_2$ & 0.50 & 0.46 & -0.07 \\ \hline
+		$D_3$ & 0.16 & 3.59 & 0.19 \\ \hline
+		$D_4$ & 0.225 & 0.24 & 1.31 \\ \hline
+		$D_5$ & 0.275 & 1.18 & 1.1 \\ \hline
+		$D_6$ & 0.24 & 0.27 & 0.64 \\ \hline
+	\end{tabular}
+\end{table}
+
+There is no reference data for the deformation potentials but they seem to have reasonable values.
+The method itself for calculating the deformation potentials is precisely described and have strong physical foundations as well as the parameters used for \abinitio\ calculations were rigid.
+
+The table above \ref{Tab:wz_electronic} shows in particular the gaps for Ge, which proves that there is a direct band gap at equilibrium state.
+As for the other materials, the indirect band gap prevails but certain perspective still exists that under the strain the situation may change in favour of the direct band gap.
+To observe this,  the fundamental band gaps under strain are presented (Fig. \ref{Fig:wz_fundamental} along with effective masses of carriers (Fig. \ref{Fig:wz_mass}) at $\Gamma$ k--point (for holes) and at fundamental gap k--point (for electrons). Both in $\Delta$ and $\Lambda$ directions.
+
+
+\begin{figure}[!htbp]
+	\centering
+	\subfloat[][Fundamental band gaps.\label{Fig:wz_fundamental}]{\includegraphics[width=.45\textwidth]{/wurtzite/WZ-gap.pdf}}\quad
+	\subfloat[][Effective mass of charge carriers.\label{Fig:wz_mass}]{\includegraphics[width=.45\textwidth]{/wurtzite/WZ-mass.pdf}}
+	\caption{Band structure parameters in wurtzite system group IV materials.}
+\end{figure}
+
+In Fig. \ref{Fig:wz_fundamental} one can see that in the case of Ge the direct band gap appears at  almost all applied strains.
+Only at biaxial compressive strain higher than 2\%, the gap is indirect. 
+Moreover, the value of the direct gap may vary from actually closed one (at biaxial tensile and axial compressive strain) to even more than $0.6\ eV$ (in isotropic compressive strain).
+This fact together with the fact that the effective masses of electrons and holes in $\Delta$ direction are below $0.2\ m_e$, opens interesting perspectives  for  applications of this material in infrared optoelectronics.
+Apart from Ge, only Si appears to have direct band gap under biaxial tensile strain, but only above 4\%, which is a quite high value.
+
+The data obtained in this work for Si can be compared with the literature data  \cite{wz_si_strain_dft}, which are also theoretical.
+The lattice constants  differ on second decimal point and the fundamental band gap value differs around 0.2 eV, although the type of gap is the same ($\Gamma-M$).
+The equilibrium state band gaps are almost the same. The transitions of type of fundamental gap is exactly at the same strain value for all three straining types.
+The difference can be seen in the slope of band gap changes, in presented results it is slightly lower and in biaxial strains the parabolic behaviour is more distinct, unlike in the reference.
+Nevertheless, the agreement is good enough to enhance the credibility of the rest of the investigated materials.
+
+For the full picture $\Delta_{so}$ and $\Delta_{cr}$ were also calculated for all the types of strains and their range. 
+The results are shown in the Fig. \ref{Fig:wz_delta}.
+\begin{figure}[!htbp]
+	\centering
+	\includegraphics[width=.8\textwidth]{/wurtzite/WZ-delta.pdf}
+	\caption{Strain dependence of $\Delta_{so}$ and $\Delta_{cr}$ in wurtzite group IV systems.}
+	\label{Fig:wz_delta}
+\end{figure}
+
+While there are almost no changes in the $\Delta_{so}$ parameters, the $\Delta_{cr}$ vary significantly, up to 4-times in Ge at biaxial strain. 
+
+\ornament

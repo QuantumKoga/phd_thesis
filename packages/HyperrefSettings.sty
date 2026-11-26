@@ -1,0 +1,38 @@
+% hyperlinks
+%\usepackage[colorlinks,backref=page]{hyperref}
+\usepackage[colorlinks,pagebackref]{hyperref}
+
+\usepackage{cleveref}
+\newcommand{\crefrangeconjunction}{--}
+\newcommand{\crefpairconjunction}{ and }
+\newcommand{\creflastconjunction}{ and }
+
+
+\hypersetup{
+  linkcolor  = MidnightBlue,
+  citecolor  = YellowOrange,
+  urlcolor   = OliveGreen,
+  colorlinks = true,
+  linktoc=all,
+  pdftitle={Electronic structure engineering of group IV crystals for optoelectronic applications -- first principles study},
+  pdfauthor={Norbert Janik},
+  pdfsubject={doctoral dissertation},
+  pdfkeywords={DFT, electronic structure, group IV semiconductors}
+}
+
+\def\backrefsep{, }%
+\def\backreftwosep{ and~}%
+\def\backreflastsep{, and~}%
+\renewcommand*{\backref}[1]{}
+\renewcommand*{\backrefalt}[4]{[{\small%
+    \ifcase #1 Not cited.%
+          \or s.~#2.%
+          \else s.~#2.%
+    \fi%
+    }]}
+    
+\def\myBibPreambleText{[Citing pages are listed after each reference.]}
+
+%%%%%%%%%%%%%%%%%%%%%%%
+%\hypersetup{draft}
+%%%%%%%%%%%%%%%%%%%%%%%
