@@ -84,6 +84,6 @@ Bibliographic details and the appropriate citation format can be added here once
 
 ## Acknowledgements
 
-Special thanks to [@andywiecko](https://github.com/andywiecko) for creating the original LaTeX thesis template on which this project is based.
+Special thanks to my dear colleague [@andywiecko](https://github.com/andywiecko) for creating the original LaTeX thesis template on which this project is based.
 
 I am grateful for the time and effort put into developing the template, which provided the foundation for this work.
